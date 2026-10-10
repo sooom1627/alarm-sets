@@ -1,0 +1,4 @@
+.cursor/
+.claude/
+.agents/
+uniwind-types.d.ts
