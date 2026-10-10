@@ -1,0 +1,43 @@
+---
+description: Classical TDD cycle — confirm Red, implement, confirm Green, then check. Do not auto-commit
+alwaysApply: true
+---
+
+# TDD Cycle
+
+Classical TDD with minimal mocking. Order is mandatory: **Red → Green → Refactor**.
+
+## Per Sub (`ST-###`)
+
+1. Write a **failing** test for one behavior
+2. Run the test and **confirm Red** (failure reason must match intent; fix the test if not)
+3. Write the **minimum** implementation to pass
+4. Run the test and **confirm Green**
+5. Refactor if needed; stay Green
+6. Run `pnpm run check`
+7. Stop and report the Sub is ready. **Do not commit** unless the user explicitly asks (**one Sub = one commit** when they do)
+
+Do not add the next test until Green is confirmed. Do not implement before Red is confirmed. Do not defer tests to the end. Do not auto-commit after Green or `check`.
+
+Layer Subs (schema / db / hooks) use a test at that layer. UI Subs use RNTL for the Task’s screen acceptance. Put tests in that layer’s `test/` folder (e.g. `hooks/test/`), not next to the source file.
+
+## Style
+
+- Prefer sociable tests with real collaborators
+- Mock only out-of-process dependencies (camera, push notifications, etc.)
+- Assert the layer’s contract, not incidental implementation details
+  - schema: parse / reject
+  - db: persist / list
+  - hooks: read / invalidate after write
+  - UI: screen Given/When/Then (RNTL)
+- Tools: Jest + React Native Testing Library
+
+## Bugs
+
+Reproduce with a failing test (Red) first, then fix (Green).
+
+## Commits
+
+- Never commit unless the user explicitly asks
+- Format: `prefix: message` (see `AGENTS.md`)
+- Include Story ID, Sub ID and the Task issue number in the message or body (e.g. `S-001 ST-003 (#12)`)

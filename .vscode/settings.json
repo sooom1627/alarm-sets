@@ -3,5 +3,17 @@
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit",
     "source.sortMembers": "explicit"
-  }
+  },
+  "css.customData": [".vscode/css-custom-data.json"],
+  "css.lint.unknownAtRules": "ignore",
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "contentContainerClassName",
+    "columnWrapperClassName",
+    "placeholderTextColorClassName",
+    "colorClassName",
+    "tintColorClassName"
+  ],
+  "tailwindCSS.classFunctions": ["useResolveClassNames"]
 }

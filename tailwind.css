@@ -1,0 +1,58 @@
+@import "tailwindcss";
+@import "uniwind";
+
+/* Same value in light and dark: brand colors and pressed / disabled states. */
+@theme {
+  --color-accent: #f97316;
+  --color-danger: #ef4444;
+  --color-main-hover: #334155;
+  --color-surface-muted-active: #e2e8f0;
+  --color-text-muted: #64748b;
+}
+
+/* Semantic colors: use these instead of `dark:` variants. Both variants must
+   define the same variables. */
+@layer theme {
+  :root {
+    @variant light {
+      --color-background: #ffffff;
+      --color-foreground: #1e293b;
+      --color-foreground-secondary: #334155;
+      --color-foreground-muted: #5b6b80;
+      --color-surface-muted: #f1f5f9;
+      --color-border: #e2e8f0;
+      --color-primary: #1e293b;
+      --color-primary-foreground: #ffffff;
+      --color-inverse: #1e293b;
+      /* Accent tints: subtle = panel, soft = chips on it, strong = text on
+         either (>= 4.5:1). */
+      --color-accent-subtle: #fff7ed;
+      --color-accent-soft: #ffedd5;
+      --color-accent-strong: #9a3412;
+      /* Tab screens sit on canvas; tiles on it use surface, lighter than
+         canvas so they lift off it. */
+      --color-canvas: #f4f4f5;
+      --color-surface: #ffffff;
+    }
+    @variant dark {
+      --color-background: #0f172a;
+      --color-foreground: #f1f5f9;
+      --color-foreground-secondary: #cbd5e1;
+      --color-foreground-muted: #94a3b8;
+      --color-surface-muted: #334155;
+      --color-border: #334155;
+      --color-primary: #f1f5f9;
+      --color-primary-foreground: #0f172a;
+      --color-inverse: #334155;
+      --color-accent-subtle: #431407;
+      --color-accent-soft: #7c2d12;
+      --color-accent-strong: #fdba74;
+      --color-canvas: #0f172a;
+      --color-surface: #334155;
+    }
+  }
+}
+
+@utility shadow-fab {
+  box-shadow: 0 8px 24px rgba(30, 41, 59, 0.22);
+}
