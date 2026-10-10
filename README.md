@@ -1,12 +1,10 @@
 # alarm-sets
 
-アラーム、もう並べない。
-
-「家を出る」「早起き」のような、これからやることを選ぶだけで、必要なアラームがまとめて入る iOS アプリです。
+タイマーを鳴らしたい行動を事前に作っておき、一覧からワンタップで呼び出せる iOS アプリです。
 
 ## Documentation
 
-- [docs/product.md](docs/product.md) — プロダクト定義（概要・原則・基盤・Epic）
+- [docs/product.md](docs/product.md) — プロダクト定義（概要・作る・使う・基盤・Epic）
 - [docs/design.md](docs/design.md) — IA・画面定義
 - [GitHub Issues](https://github.com/sooom1627/alarm-sets/issues) — Story / Task（Epic 一覧は [docs/product.md](docs/product.md) §3）
 
