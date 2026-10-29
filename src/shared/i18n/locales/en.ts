@@ -6,6 +6,26 @@ export const en = {
   },
   create: {
     title: "Create",
+    sheetTitle: "New action",
+    name: "Name",
+    namePlaceholder: "e.g. Leave home",
+    minutes: "Time",
+    minutesValue: "{{minutes}} min",
+    minutesUnit: "min",
+    decrease: "Decrease",
+    increase: "Increase",
+    whenToRing: "When should it ring?",
+    kinds: {
+      after: {
+        label: "Ring {{minutes}} min after I press",
+        example: "e.g. Wake me {{minutes}} min into a nap",
+      },
+      before: {
+        label: "Ring {{minutes}} min before a target time",
+        example: "e.g. Remind me {{minutes}} min before leaving home",
+      },
+    },
+    save: "Save",
   },
   settings: {
     title: "Settings",
