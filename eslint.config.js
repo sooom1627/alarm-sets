@@ -255,7 +255,16 @@ module.exports = [
       // 矛盾するクラス名を検出（flex flex-col と flex-row など）
       "tailwindcss/no-contradicting-classname": "error",
       // カスタムクラス名の使用を制限（Uniwindでは基本的にTailwindクラスのみ使用）
-      "tailwindcss/no-custom-classname": "warn",
+      // tailwind.css の @layer theme（ライト / ダーク）で定義した色トークンは
+      // プラグインが読めないため、名前を許可リストに入れる
+      "tailwindcss/no-custom-classname": [
+        "warn",
+        {
+          whitelist: [
+            "(bg|text|border|accent|from|via|to)-(grad-[1-4]|screen|card|chip|line|faint|muted|ink|red|sun|on-sun|sun-soft)",
+          ],
+        },
+      ],
       // 不要な任意値を警告（text-[16px] より text-base を推奨）
       "tailwindcss/no-unnecessary-arbitrary-value": "warn",
 

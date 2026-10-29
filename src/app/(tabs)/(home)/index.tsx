@@ -10,7 +10,7 @@ export default function HomeTab() {
 
   return (
     <>
-      <View className="bg-background flex-1" />
+      <View className="bg-screen flex-1" />
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button
           icon="gearshape"
