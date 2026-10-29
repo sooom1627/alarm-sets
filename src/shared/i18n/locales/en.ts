@@ -9,6 +9,7 @@ export const en = {
   },
   settings: {
     title: "Settings",
+    language: "Language",
   },
 };
 

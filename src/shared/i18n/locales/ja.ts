@@ -10,5 +10,6 @@ export const ja: Translation = {
   },
   settings: {
     title: "設定",
+    language: "言語",
   },
 };
