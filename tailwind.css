@@ -56,6 +56,14 @@
   }
 }
 
+/* Numbers and labels use Geist Mono (SIL OFL, bundled by expo-font in
+   app.json). The names are the fonts' PostScript names. Japanese text keeps
+   the system font. */
+@theme {
+  --font-mono: "GeistMono-Regular";
+  --font-mono-light: "GeistMono-Light";
+}
+
 @utility shadow-fab {
   box-shadow: 0 8px 24px rgba(30, 41, 59, 0.22);
 }

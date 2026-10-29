@@ -40,6 +40,15 @@
             "ios": ["en", "ja"]
           }
         }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/GeistMono-Regular.ttf",
+            "./assets/fonts/GeistMono-Light.ttf"
+          ]
+        }
       ]
     ],
     "experiments": {
