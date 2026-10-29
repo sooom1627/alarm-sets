@@ -21,7 +21,7 @@ export default function RootLayout() {
         options={{
           presentation: "formSheet",
           sheetGrabberVisible: true,
-          title: t("create.title"),
+          title: t("create.sheetTitle"),
         }}
       />
       <Stack.Screen
