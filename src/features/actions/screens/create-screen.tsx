@@ -4,10 +4,9 @@ import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 
 import { useTranslation } from "react-i18next";
 
-import { KindOptions, type ActionKind } from "../components/kind-options";
+import { KindOptions } from "../components/kind-options";
 import { MinutesField } from "../components/minutes-field";
-
-const NAME_MAX_LENGTH = 16;
+import { actionNameMaxLength, type ActionKind } from "../schemas/action";
 
 export const CreateScreen = () => {
   const { t } = useTranslation();
@@ -31,7 +30,7 @@ export const CreateScreen = () => {
             aria-label={t("create.name")}
             value={name}
             onChangeText={setName}
-            maxLength={NAME_MAX_LENGTH}
+            maxLength={actionNameMaxLength}
             placeholder={t("create.namePlaceholder")}
             placeholderTextColorClassName="accent-faint"
             className="bg-card text-ink border-continuous h-14 rounded-[22px] px-5 text-[17px]"
