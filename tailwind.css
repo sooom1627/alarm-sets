@@ -1,54 +1,57 @@
 @import "tailwindcss";
 @import "uniwind";
 
-/* Same value in light and dark: brand colors and pressed / disabled states. */
-@theme {
-  --color-accent: #f97316;
-  --color-danger: #ef4444;
-  --color-main-hover: #334155;
-  --color-surface-muted-active: #e2e8f0;
-  --color-text-muted: #64748b;
-}
-
-/* Semantic colors: use these instead of `dark:` variants. Both variants must
-   define the same variables. */
+/* Color tokens from the design (issue #25). Use these instead of `dark:`
+   variants. Both variants must define the same variables. Text pairs are all
+   >= 4.5:1 (WCAG 2.x). */
 @layer theme {
   :root {
     @variant light {
-      --color-background: #ffffff;
-      --color-foreground: #1e293b;
-      --color-foreground-secondary: #334155;
-      --color-foreground-muted: #5b6b80;
-      --color-surface-muted: #f1f5f9;
-      --color-border: #e2e8f0;
-      --color-primary: #1e293b;
-      --color-primary-foreground: #ffffff;
-      --color-inverse: #1e293b;
-      /* Accent tints: subtle = panel, soft = chips on it, strong = text on
-         either (>= 4.5:1). */
-      --color-accent-subtle: #fff7ed;
-      --color-accent-soft: #ffedd5;
-      --color-accent-strong: #9a3412;
-      /* Tab screens sit on canvas; tiles on it use surface, lighter than
-         canvas so they lift off it. */
-      --color-canvas: #f4f4f5;
-      --color-surface: #ffffff;
+      /* Screen background gradient, top to bottom: sky blue fading to a
+         faint yellow. */
+      --color-grad-1: #c9dcf0;
+      --color-grad-2: #e0ebf5;
+      --color-grad-3: #f1f4f6;
+      --color-grad-4: #f4ecd6;
+      /* Sheet background. */
+      --color-screen: #f2f5f8;
+      /* Cards, inputs, lists. */
+      --color-card: #fcfcfd;
+      /* Secondary buttons, chips, the selected tab. */
+      --color-chip: #e4e9ef;
+      /* Dividers and the unreached stripes. Not for text. */
+      --color-line: #dde3ea;
+      /* Radio outlines, placeholders. Not for text. */
+      --color-faint: #c3c3cb;
+      /* Supporting text. */
+      --color-muted: #5e5e66;
+      /* Body text, primary buttons, the elapsed bar. */
+      --color-ink: #151518;
+      /* Only for alarm times, running, the last 5 minutes and confirming a
+         cancel. */
+      --color-red: #c2302a;
+      /* Small yellow accents. Text on it is always `text-on-sun`. */
+      --color-sun: #f2c94c;
+      --color-on-sun: #151518;
+      /* Reminder labels. */
+      --color-sun-soft: #fbefc4;
     }
     @variant dark {
-      --color-background: #0f172a;
-      --color-foreground: #f1f5f9;
-      --color-foreground-secondary: #cbd5e1;
-      --color-foreground-muted: #94a3b8;
-      --color-surface-muted: #334155;
-      --color-border: #334155;
-      --color-primary: #f1f5f9;
-      --color-primary-foreground: #0f172a;
-      --color-inverse: #334155;
-      --color-accent-subtle: #431407;
-      --color-accent-soft: #7c2d12;
-      --color-accent-strong: #fdba74;
-      --color-canvas: #0f172a;
-      --color-surface: #334155;
+      --color-grad-1: #16293e;
+      --color-grad-2: #111b28;
+      --color-grad-3: #11161d;
+      --color-grad-4: #201c12;
+      --color-screen: #101722;
+      --color-card: #1c222b;
+      --color-chip: #2a313b;
+      --color-line: #28303a;
+      --color-faint: #4a525e;
+      --color-muted: #9c9ca5;
+      --color-ink: #f2f2f5;
+      --color-red: #ff6457;
+      --color-sun: #e8c35a;
+      --color-on-sun: #151518;
+      --color-sun-soft: #3a3220;
     }
   }
 }

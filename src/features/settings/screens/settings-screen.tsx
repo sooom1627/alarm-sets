@@ -22,10 +22,8 @@ export const SettingsScreen = () => {
   const currentLanguage = languageSchema.parse(currentI18n.resolvedLanguage);
 
   return (
-    <View className="bg-background flex-1 gap-2 p-4">
-      <Text className="text-foreground-muted text-sm">
-        {t("settings.language")}
-      </Text>
+    <View className="bg-screen flex-1 gap-2 p-4">
+      <Text className="text-muted text-sm">{t("settings.language")}</Text>
       <Host matchContents={{ vertical: true }}>
         <Picker
           label={t("settings.language")}

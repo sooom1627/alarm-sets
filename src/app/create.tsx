@@ -1,5 +1,5 @@
 import { View } from "react-native";
 
 export default function CreateSheet() {
-  return <View className="bg-background flex-1" />;
+  return <View className="bg-screen flex-1" />;
 }
