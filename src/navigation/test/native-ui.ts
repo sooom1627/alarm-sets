@@ -3,7 +3,8 @@ import { act, fireEvent, screen } from "expo-router/testing-library";
 // Tabs, headers and sheets are native views (react-native-screens). These
 // helpers find them in the rendered tree and fire the events iOS would send.
 
-type Node = { type: unknown; props: Record<string, any> };
+type Node = { type: unknown; props: Record<string, unknown> };
+type HeaderButton = { accessibilityLabel?: string; buttonId: string };
 
 const isShownHeader = (node: Node) =>
   node.type === "RNSScreenStackHeaderConfig" && !node.props.hidden;
@@ -23,47 +24,48 @@ export const pressTab = async (tabLabel: string) => {
   const tab = findTab(tabLabel);
   await act(async () => {
     fireEvent(host, "tabSelected", {
-      nativeEvent: { selectedScreenKey: tab.props.screenKey, provenance: 0 },
+      nativeEvent: {
+        selectedScreenKey: tab.props.screenKey as string,
+        provenance: 0,
+      },
     });
   });
 };
 
+const titleOf = (header: Node) => header.props.title as string;
+
+const rightButtonsOf = (header: Node) =>
+  (header.props.headerRightBarButtonItems ?? []) as HeaderButton[];
+
 export const headerTitlesInTab = (tabLabel: string) =>
-  findTab(tabLabel)
-    .queryAll(isShownHeader)
-    .map((header) => header.props.title);
+  findTab(tabLabel).queryAll(isShownHeader).map(titleOf);
 
 export const shownHeaderTitles = () =>
-  screen.container.queryAll(isShownHeader).map((header) => header.props.title);
+  screen.container.queryAll(isShownHeader).map(titleOf);
 
 export const headerButtonLabelsInTab = (tabLabel: string) =>
   findTab(tabLabel)
     .queryAll(isShownHeader)
-    .flatMap((header) => header.props.headerRightBarButtonItems ?? [])
-    .map((item: { accessibilityLabel?: string }) => item.accessibilityLabel);
+    .flatMap(rightButtonsOf)
+    .map((button) => button.accessibilityLabel);
 
 export const pressHeaderButtonInTab = async (
   tabLabel: string,
   buttonLabel: string,
 ) => {
-  const header = findTab(tabLabel)
-    .queryAll(isShownHeader)
-    .find((node) =>
-      (node.props.headerRightBarButtonItems ?? []).some(
-        (item: { accessibilityLabel?: string }) =>
-          item.accessibilityLabel === buttonLabel,
-      ),
+  for (const header of findTab(tabLabel).queryAll(isShownHeader)) {
+    const button = rightButtonsOf(header).find(
+      (item) => item.accessibilityLabel === buttonLabel,
     );
-  if (!header) throw new Error(`No header button labelled "${buttonLabel}"`);
-  const item = header.props.headerRightBarButtonItems.find(
-    (button: { accessibilityLabel?: string }) =>
-      button.accessibilityLabel === buttonLabel,
-  );
-  await act(async () => {
-    fireEvent(header, "pressHeaderBarButtonItem", {
-      nativeEvent: { buttonId: item.buttonId },
+    if (!button) continue;
+    await act(async () => {
+      fireEvent(header, "pressHeaderBarButtonItem", {
+        nativeEvent: { buttonId: button.buttonId },
+      });
     });
-  });
+    return;
+  }
+  throw new Error(`No header button labelled "${buttonLabel}"`);
 };
 
 const findSheet = (routeName: string) => {
