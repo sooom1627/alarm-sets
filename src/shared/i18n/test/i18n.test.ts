@@ -5,10 +5,10 @@ import { initI18n } from "../i18n";
 describe("initI18n", () => {
   it("translates in the given language", () => {
     initI18n("ja");
-    expect(i18n.t("home.title")).toBe("ホーム");
+    expect(i18n.t("tabs.home")).toBe("ホーム");
 
     initI18n("en");
-    expect(i18n.t("home.title")).toBe("Home");
+    expect(i18n.t("tabs.home")).toBe("Home");
   });
 
   it("switches the language with changeLanguage", async () => {
@@ -16,6 +16,6 @@ describe("initI18n", () => {
 
     await i18n.changeLanguage("en");
 
-    expect(i18n.t("home.title")).toBe("Home");
+    expect(i18n.t("tabs.home")).toBe("Home");
   });
 });

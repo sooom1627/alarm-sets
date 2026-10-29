@@ -18,5 +18,21 @@ jest.mock("uniwind", () => ({
   }),
 }));
 
-// Acceptance criteria are written in Japanese, so tests render in ja.
+// Acceptance criteria are written in Japanese, so tests render in ja: the
+// device prefers ja (read by the root layout) and i18n starts in ja.
+jest.mock("expo-localization", () => ({
+  ...jest.requireActual("expo-localization"),
+  getLocales: () => [{ languageTag: "ja-JP", languageCode: "ja" }],
+}));
 initI18n("ja");
+
+// SQLite is out of process: back the key-value store with an in-memory map.
+jest.mock("expo-sqlite/kv-store", () => {
+  const store = new Map<string, string>();
+  return {
+    Storage: {
+      getItemSync: (key: string) => store.get(key) ?? null,
+      setItemSync: (key: string, value: string) => store.set(key, value),
+    },
+  };
+});
