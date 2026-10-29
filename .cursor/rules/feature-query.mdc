@@ -20,6 +20,7 @@ src/
   shared/
     components/                # cross-feature UI (when needed)
     db/                        # SQLite connection only (getDb). Table DDL stays in the feature
+    i18n/                      # i18next init, language (choose / save), locales/en.ts + ja.ts
     query/                     # QueryClient factory (local default: staleTime Infinity)
     utils/                     # cross-feature helpers (datetime, …)
     hooks/
@@ -34,7 +35,8 @@ src/
 - Cut the feature folders above even when they hold one file. Do **not** add `api/` `types/` `repository/` `docs/`, or barrel `index.ts` for integration
 - Query lives in `hooks/`. Feature `db/` talks to SQLite only (table DDL + CRUD). The connection singleton is `shared/db`. Screens import Query hooks, not `db/`
 - Do **not** put a generic `useQuery` wrapper in `shared`. Feature hooks keep their own queryKey and `queryFn`
-- Inline display strings at the call site. Type-keyed label maps (e.g. `SetKind` → 「逆算 / 今から / 連動」) live next to the schema. Do **not** add a `constants/` folder for one-off copy
+- Display strings live in `src/shared/i18n/locales/` (`en.ts` is the source of keys; `ja.ts` has the same shape) and are read with `t` from `useTranslation`. Type-keyed labels (e.g. `SetKind` → 「逆算 / 今から / 連動」) live next to the schema as a map from the type to its translation key. Do **not** add a `constants/` folder for one-off copy
+- The language lives only in i18next (`changeLanguage`) and its saved value. Do **not** copy it into Context or Query
 - Tests live in that layer’s `test/` (e.g. `hooks/test/`, `db/test/`). Do **not** colocate `*.test.ts(x)` next to the source file, and do **not** put a feature-root `test/`
 - Do **not** introduce Repository interfaces, DI Context, or dual Memory/SQLite implementations “for testability.” Call SQLite (or a plain helper) from the feature; mock only out-of-process boundaries in tests
 
