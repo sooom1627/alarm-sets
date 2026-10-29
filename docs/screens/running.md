@@ -7,7 +7,7 @@
 
 ## 入りと出
 
-- ルート: `/running`（`src/app/(tabs)/(running)/index.tsx`）
+- ルート: `/running`（`src/app/(tabs)/running/index.tsx`）
 - タブ名: 実行中（英語: Running）
 - ヘッダー右の設定ボタン → 設定のシート（`/settings`）
 - タブバー → 行動の一覧（[action-list.md](./action-list.md)）

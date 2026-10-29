@@ -1,7 +1,11 @@
-import { act, render, screen } from "@testing-library/react-native";
+import { act, renderRouter, screen } from "expo-router/testing-library";
+
 import i18n from "i18next";
 
-import HomeTab from "@/app/index";
+const tabTitles = () =>
+  screen.container
+    .queryAll((node) => node.type === "RNSTabsScreenIOS")
+    .map((tab) => tab.props.title);
 
 afterEach(async () => {
   await act(() => i18n.changeLanguage("ja"));
@@ -9,16 +13,16 @@ afterEach(async () => {
 
 describe("translated screen text", () => {
   it("shows the text in the current language", async () => {
-    await render(<HomeTab />);
+    await renderRouter("./src/app", { initialUrl: "/" });
 
-    expect(screen.getByText("ホーム")).toBeOnTheScreen();
+    expect(tabTitles()).toEqual(["ホーム", "実行中"]);
   });
 
   it("re-renders the text when the language changes", async () => {
-    await render(<HomeTab />);
+    await renderRouter("./src/app", { initialUrl: "/" });
 
     await act(() => i18n.changeLanguage("en"));
 
-    expect(screen.getByText("Home")).toBeOnTheScreen();
+    expect(tabTitles()).toEqual(["Home", "Running"]);
   });
 });
