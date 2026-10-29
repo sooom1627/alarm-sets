@@ -4,6 +4,9 @@ export const en = {
     home: "Home",
     running: "Running",
   },
+  create: {
+    title: "Create",
+  },
   settings: {
     title: "Settings",
   },

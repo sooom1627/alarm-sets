@@ -5,6 +5,9 @@ export const ja: Translation = {
     home: "ホーム",
     running: "実行中",
   },
+  create: {
+    title: "作る",
+  },
   settings: {
     title: "設定",
   },

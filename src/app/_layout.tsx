@@ -17,6 +17,14 @@ export default function RootLayout() {
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
+        name="create"
+        options={{
+          presentation: "formSheet",
+          sheetGrabberVisible: true,
+          title: t("create.title"),
+        }}
+      />
+      <Stack.Screen
         name="settings"
         options={{
           presentation: "formSheet",

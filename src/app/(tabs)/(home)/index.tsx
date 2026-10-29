@@ -17,6 +17,11 @@ export default function HomeTab() {
           accessibilityLabel={t("settings.title")}
           onPress={() => push("/settings")}
         />
+        <Stack.Toolbar.Button
+          icon="plus"
+          accessibilityLabel={t("create.title")}
+          onPress={() => push("/create")}
+        />
       </Stack.Toolbar>
     </>
   );
