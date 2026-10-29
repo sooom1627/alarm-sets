@@ -89,3 +89,49 @@ export const swipeSheetDown = async (routeName: string) => {
     fireEvent(sheet, "dismissed", { nativeEvent: { dismissCount: 1 } });
   });
 };
+
+// A SwiftUI Picker (@expo/ui) renders its options as Text views with a `tag`.
+type Modifier = { $type: string; tag?: string | number };
+
+const modifiersOf = (node: Node) => (node.props.modifiers ?? []) as Modifier[];
+
+const findPicker = () => {
+  const [picker] = screen.container.queryAll(
+    (node) =>
+      typeof node.props.onSelectionChange === "function" &&
+      "selection" in node.props,
+  );
+  if (!picker) throw new Error("No picker");
+  return picker;
+};
+
+const optionsOf = (
+  picker: Node & { queryAll: typeof screen.container.queryAll },
+) =>
+  picker
+    .queryAll((node) => modifiersOf(node).some((m) => m.$type === "tag"))
+    .map((node) => ({
+      label: node.props.text as string,
+      tag: modifiersOf(node).find((m) => m.$type === "tag")?.tag,
+    }));
+
+export const pickerOptionLabels = () =>
+  optionsOf(findPicker()).map((option) => option.label);
+
+export const selectedPickerOptionLabel = () => {
+  const picker = findPicker();
+  return optionsOf(picker).find(
+    (option) => option.tag === picker.props.selection,
+  )?.label;
+};
+
+export const selectPickerOption = async (label: string) => {
+  const picker = findPicker();
+  const option = optionsOf(picker).find((item) => item.label === label);
+  if (!option) throw new Error(`No picker option labelled "${label}"`);
+  await act(async () => {
+    fireEvent(picker, "selectionChange", {
+      nativeEvent: { selection: option.tag },
+    });
+  });
+};
