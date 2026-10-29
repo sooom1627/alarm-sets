@@ -4,6 +4,9 @@ export const en = {
     home: "Home",
     running: "Running",
   },
+  settings: {
+    title: "Settings",
+  },
 };
 
 export type Translation = typeof en;

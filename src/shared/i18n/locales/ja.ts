@@ -5,4 +5,7 @@ export const ja: Translation = {
     home: "ホーム",
     running: "実行中",
   },
+  settings: {
+    title: "設定",
+  },
 };
