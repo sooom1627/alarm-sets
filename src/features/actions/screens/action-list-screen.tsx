@@ -27,7 +27,7 @@ export const ActionListScreen = () => {
 
   return (
     <ScrollView
-      className="bg-screen flex-1"
+      className="bg-grad flex-1"
       contentContainerClassName="gap-3 p-4"
       contentInsetAdjustmentBehavior="automatic"
     >

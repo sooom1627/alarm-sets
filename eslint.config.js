@@ -263,6 +263,7 @@ module.exports = [
           whitelist: [
             "(bg|text|border|accent|from|via|to)-(grad-[1-4]|screen|card|chip|line|faint|muted|ink|red|sun|on-sun|sun-soft)",
             "font-mono-light",
+            "bg-grad",
           ],
         },
       ],
