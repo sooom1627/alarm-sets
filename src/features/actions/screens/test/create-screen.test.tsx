@@ -1,4 +1,7 @@
+import { QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, userEvent } from "@testing-library/react-native";
+
+import { createQueryClient } from "@/shared/query/query-client";
 
 import { CreateScreen } from "../create-screen";
 
@@ -6,7 +9,11 @@ jest.useFakeTimers();
 
 const renderCreateScreen = async () => {
   const user = userEvent.setup();
-  await render(<CreateScreen />);
+  await render(
+    <QueryClientProvider client={createQueryClient()}>
+      <CreateScreen />
+    </QueryClientProvider>,
+  );
   return { user };
 };
 

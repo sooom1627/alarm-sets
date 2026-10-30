@@ -25,14 +25,24 @@ export const actionSchema = newActionSchema.extend({
 
 export type Action = z.infer<typeof actionSchema>;
 
-// Translation keys for each kind's text in the create sheet.
+// Translation keys for each kind's text: the choice in the create sheet and
+// the tile in the action list.
 export const actionKindLabelKeys = {
   after: {
     label: "create.kinds.after.label",
     example: "create.kinds.after.example",
+    tag: "actionList.kinds.after.tag",
+    unit: "actionList.kinds.after.unit",
+    spoken: "actionList.kinds.after.spoken",
   },
   before: {
     label: "create.kinds.before.label",
     example: "create.kinds.before.example",
+    tag: "actionList.kinds.before.tag",
+    unit: "actionList.kinds.before.unit",
+    spoken: "actionList.kinds.before.spoken",
   },
-} as const satisfies Record<ActionKind, { label: string; example: string }>;
+} as const satisfies Record<
+  ActionKind,
+  Record<"label" | "example" | "tag" | "unit" | "spoken", string>
+>;

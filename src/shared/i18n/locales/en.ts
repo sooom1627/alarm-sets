@@ -27,6 +27,29 @@ export const en = {
     },
     save: "Save",
   },
+  actionList: {
+    kinds: {
+      after: {
+        tag: "After press",
+        unit: "min after",
+        spoken: "{{name}}, rings {{minutes}} min after you press",
+      },
+      before: {
+        tag: "Before target",
+        unit: "min before",
+        spoken: "{{name}}, rings {{minutes}} min before the target time",
+      },
+    },
+    empty: {
+      title: "Create your first action",
+      body: "Create the things you time, like “Nap” or “Leave home”. Next time, press one here to start it.",
+      create: "Create action",
+    },
+    loadError: {
+      title: "Couldn't load your actions",
+      retry: "Try again",
+    },
+  },
   settings: {
     title: "Settings",
     language: "Language",
