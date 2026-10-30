@@ -4,15 +4,15 @@ import { useTranslation } from "react-i18next";
 
 import { MinusIcon, PlusIcon } from "@/shared/components/icons";
 
-const MIN_MINUTES = 1;
-const MAX_MINUTES = 240;
+import { actionMaxMinutes, actionMinMinutes } from "../schemas/action";
+
 const PRESETS = [5, 10, 15, 20, 30, 45, 60];
 
 // Below 10 the stepper moves by 1, from 10 up by 5.
 const stepUp = (minutes: number) =>
-  Math.min(MAX_MINUTES, minutes + (minutes < 10 ? 1 : 5));
+  Math.min(actionMaxMinutes, minutes + (minutes < 10 ? 1 : 5));
 const stepDown = (minutes: number) =>
-  Math.max(MIN_MINUTES, minutes - (minutes <= 10 ? 1 : 5));
+  Math.max(actionMinMinutes, minutes - (minutes <= 10 ? 1 : 5));
 
 type Props = {
   minutes: number;
@@ -21,8 +21,8 @@ type Props = {
 
 export const MinutesField = ({ minutes, onChange }: Props) => {
   const { t } = useTranslation();
-  const canDecrease = minutes > MIN_MINUTES;
-  const canIncrease = minutes < MAX_MINUTES;
+  const canDecrease = minutes > actionMinMinutes;
+  const canIncrease = minutes < actionMaxMinutes;
 
   return (
     <View className="gap-2">

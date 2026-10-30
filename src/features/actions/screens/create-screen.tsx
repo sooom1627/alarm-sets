@@ -2,19 +2,33 @@ import { useState } from "react";
 
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 
+import { useRouter } from "expo-router";
+
 import { useTranslation } from "react-i18next";
 
-import { KindOptions, type ActionKind } from "../components/kind-options";
+import { KindOptions } from "../components/kind-options";
 import { MinutesField } from "../components/minutes-field";
-
-const NAME_MAX_LENGTH = 16;
+import { useCreateAction } from "../hooks/use-actions";
+import {
+  actionNameMaxLength,
+  newActionSchema,
+  type ActionKind,
+} from "../schemas/action";
 
 export const CreateScreen = () => {
   const { t } = useTranslation();
   const [name, setName] = useState("");
   const [minutes, setMinutes] = useState(30);
   const [kind, setKind] = useState<ActionKind>("after");
-  const canSave = name.trim().length > 0;
+  const { back } = useRouter();
+  const { mutate: createAction, isPending: isCreating } = useCreateAction();
+  const canSave = name.trim().length > 0 && !isCreating;
+
+  // On failure the sheet stays open with what was entered.
+  const save = () =>
+    createAction(newActionSchema.parse({ name, minutes, kind }), {
+      onSuccess: () => back(),
+    });
 
   return (
     <View className="bg-screen flex-1">
@@ -31,7 +45,7 @@ export const CreateScreen = () => {
             aria-label={t("create.name")}
             value={name}
             onChangeText={setName}
-            maxLength={NAME_MAX_LENGTH}
+            maxLength={actionNameMaxLength}
             placeholder={t("create.namePlaceholder")}
             placeholderTextColorClassName="accent-faint"
             className="bg-card text-ink border-continuous h-14 rounded-[22px] px-5 text-[17px]"
@@ -46,6 +60,7 @@ export const CreateScreen = () => {
           aria-label={t("create.save")}
           aria-disabled={!canSave}
           disabled={!canSave}
+          onPress={save}
           className={
             canSave
               ? "bg-ink h-14 items-center justify-center rounded-full"

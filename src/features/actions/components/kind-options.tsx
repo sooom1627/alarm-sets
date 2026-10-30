@@ -2,11 +2,11 @@ import { Pressable, Text, View } from "react-native";
 
 import { useTranslation } from "react-i18next";
 
-// When the action rings: some minutes after it is pressed, or some minutes
-// before a target time asked for when it is pressed.
-export type ActionKind = "after" | "before";
-
-const KINDS: ActionKind[] = ["after", "before"];
+import {
+  actionKindLabelKeys,
+  actionKindSchema,
+  type ActionKind,
+} from "../schemas/action";
 
 type Props = {
   kind: ActionKind;
@@ -23,10 +23,10 @@ export const KindOptions = ({ kind, minutes, onChange }: Props) => {
         {t("create.whenToRing")}
       </Text>
       <View role="radiogroup" className="gap-2">
-        {KINDS.map((option) => {
+        {actionKindSchema.options.map((option) => {
           const isChecked = option === kind;
-          const label = t(`create.kinds.${option}.label`, { minutes });
-          const example = t(`create.kinds.${option}.example`, { minutes });
+          const label = t(actionKindLabelKeys[option].label, { minutes });
+          const example = t(actionKindLabelKeys[option].example, { minutes });
           return (
             <Pressable
               key={option}
