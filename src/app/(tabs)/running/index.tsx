@@ -10,7 +10,7 @@ export default function RunningTab() {
 
   return (
     <>
-      <View className="bg-screen flex-1" />
+      <View className="bg-grad flex-1" />
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button
           icon="gearshape"

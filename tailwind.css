@@ -64,6 +64,19 @@
   --font-mono-light: "GeistMono-Light";
 }
 
+/* Tab screen background: grad-1 at the top fading through to grad-4 at the
+   bottom. Tailwind's from / via / to take three stops, so the four are
+   written out here. */
+@utility bg-grad {
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-grad-1),
+    var(--color-grad-2),
+    var(--color-grad-3),
+    var(--color-grad-4)
+  );
+}
+
 @utility shadow-fab {
   box-shadow: 0 8px 24px rgba(30, 41, 59, 0.22);
 }
