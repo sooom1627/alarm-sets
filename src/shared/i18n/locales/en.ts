@@ -77,6 +77,17 @@ export const en = {
       failed: "Couldn't start",
     },
   },
+  targetTime: {
+    question: "Target time?",
+    hint: "Enter when “{{name}}” is, and it rings {{minutes}} min before",
+    pickerLabel: "Target time",
+    ringTimes: "Rings at",
+    reminder: "Reminder",
+    alarm: "Alarm",
+    target: "Target time (no ring)",
+    tomorrow: "Tomorrow {{time}}",
+    reminderPast: "Already past, so it won't ring",
+  },
   settings: {
     title: "Settings",
     language: "Language",
