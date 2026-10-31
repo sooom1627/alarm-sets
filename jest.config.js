@@ -1,6 +1,9 @@
 module.exports = {
   preset: "jest-expo",
   passWithNoTests: true,
+  // Tests that render the whole router (and the 240-minute wheel) take up to
+  // ~3 s locally and went past the 5 s default on CI.
+  testTimeout: 15000,
   // On GitHub Actions, failed tests also show as annotations on the PR.
   reporters: process.env.GITHUB_ACTIONS
     ? ["default", "github-actions"]
