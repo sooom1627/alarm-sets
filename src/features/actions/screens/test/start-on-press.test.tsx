@@ -74,6 +74,7 @@ describe("pressing an action that rings minutes after it is pressed", () => {
         actionId: nap.id,
         startedAt: pressedAt.getTime(),
         ringsAt: new Date(2026, 9, 31, 14, 20).getTime(),
+        remindsAt: null,
       },
     ]);
   });

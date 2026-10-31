@@ -1,12 +1,20 @@
 import { useEffect, useState } from "react";
 
-import { ScrollView, Text, View } from "react-native";
+import {
+  AccessibilityInfo,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
 
+import * as Haptics from "expo-haptics";
 import { Stack, useRouter } from "expo-router";
 import { DatePicker, Host } from "@expo/ui/swift-ui";
 import { datePickerStyle } from "@expo/ui/swift-ui/modifiers";
 
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner-native";
 
 import { useActions } from "@/features/actions/hooks/use-actions";
 import type { Action } from "@/features/actions/schemas/action";
@@ -14,6 +22,7 @@ import { formatClockTime } from "@/shared/utils/clock-time";
 
 import { RingTimeRow } from "../components/ring-time-row";
 import { useLastTarget } from "../hooks/use-last-target";
+import { useStartAtTarget } from "../hooks/use-starts";
 import {
   firstTargetTime,
   isNextDay,
@@ -66,12 +75,56 @@ const TargetTimeForm = ({ action, initialTarget }: FormProps) => {
   const { t, i18n } = useTranslation();
   const { name, minutes, remindMinutes } = action;
   const [target, setTarget] = useState(initialTarget);
+  // Measured, as in the create sheet, so the list scrolls clear of Start.
+  const [startBarHeight, setStartBarHeight] = useState(96);
+  const { back } = useRouter();
+  const { mutate: startAtTarget, isPending: isStarting } = useStartAtTarget();
   const now = new Date();
   const times = ringTimes({ target, minutes, remindMinutes }, now);
   const formatTime = (epochMs: number) => {
     const time = formatClockTime(epochMs, i18n.language);
     return isNextDay(epochMs, now) ? t("targetTime.tomorrow", { time }) : time;
   };
+  const alarmTime = formatTime(times.ringsAt);
+
+  // Same feedback as starting from the list; on failure the sheet stays.
+  const start = () => {
+    const startedAt = new Date();
+    const { ringsAt, remindsAt, isReminderPast } = ringTimes(
+      { target, minutes, remindMinutes },
+      startedAt,
+    );
+    startAtTarget(
+      {
+        start: {
+          actionId: action.id,
+          startedAt: startedAt.getTime(),
+          ringsAt,
+          remindsAt: isReminderPast ? null : remindsAt,
+        },
+        target,
+      },
+      {
+        onSuccess: () => {
+          const started = t("actionList.started.title", {
+            name,
+            time: alarmTime,
+          });
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          toast.success(started);
+          AccessibilityInfo.announceForAccessibility(started);
+          back();
+        },
+        onError: () => {
+          toast.error(t("actionList.started.failed"));
+          AccessibilityInfo.announceForAccessibility(
+            t("actionList.started.failed"),
+          );
+        },
+      },
+    );
+  };
+
   const selection = new Date(now);
   selection.setHours(target.hour, target.minute, 0, 0);
 
@@ -83,7 +136,8 @@ const TargetTimeForm = ({ action, initialTarget }: FormProps) => {
       <ScrollView
         className="flex-1"
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerClassName="gap-6 px-4 pt-2 pb-8"
+        contentContainerClassName="gap-6 px-4 pt-2"
+        contentContainerStyle={{ paddingBottom: startBarHeight + 32 }}
       >
         <View className="gap-1">
           <Text role="heading" className="text-ink text-xl font-bold">
@@ -131,6 +185,23 @@ const TargetTimeForm = ({ action, initialTarget }: FormProps) => {
           />
         </View>
       </ScrollView>
+      <View
+        onLayout={(event) => setStartBarHeight(event.nativeEvent.layout.height)}
+        className="bg-screen absolute inset-x-0 bottom-0 px-4 pt-2 pb-8"
+      >
+        <Pressable
+          role="button"
+          aria-label={t("targetTime.startAt", { time: alarmTime })}
+          aria-disabled={isStarting}
+          disabled={isStarting}
+          onPress={start}
+          className="bg-ink h-14 items-center justify-center rounded-full active:opacity-60"
+        >
+          <Text className="text-card text-[17px] font-bold">
+            {t("targetTime.startAt", { time: alarmTime })}
+          </Text>
+        </Pressable>
+      </View>
     </View>
   );
 };

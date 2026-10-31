@@ -8,6 +8,7 @@ describe("startAfterPress", () => {
       actionId: 3,
       startedAt: pressedAt.getTime(),
       ringsAt: new Date(2026, 9, 31, 14, 20).getTime(),
+      remindsAt: null,
     });
   });
 
@@ -21,7 +22,13 @@ describe("startAfterPress", () => {
 });
 
 describe("startSchema", () => {
-  const valid = { id: 1, actionId: 3, startedAt: 1000, ringsAt: 61000 };
+  const valid = {
+    id: 1,
+    actionId: 3,
+    startedAt: 1000,
+    ringsAt: 61000,
+    remindsAt: null,
+  };
 
   it("accepts an action, when it started and when it rings", () => {
     expect(startSchema.parse(valid)).toEqual(valid);
@@ -35,6 +42,21 @@ describe("startSchema", () => {
 
   it("rejects times that are not whole milliseconds", () => {
     expect(startSchema.safeParse({ ...valid, ringsAt: 1.5 }).success).toBe(
+      false,
+    );
+  });
+
+  it("accepts a reminder between the start and the alarm", () => {
+    expect(startSchema.safeParse({ ...valid, remindsAt: 31000 }).success).toBe(
+      true,
+    );
+  });
+
+  it("rejects a reminder that is not before the alarm or not after the start", () => {
+    expect(startSchema.safeParse({ ...valid, remindsAt: 61000 }).success).toBe(
+      false,
+    );
+    expect(startSchema.safeParse({ ...valid, remindsAt: 1000 }).success).toBe(
       false,
     );
   });

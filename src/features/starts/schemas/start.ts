@@ -5,24 +5,31 @@ const startFields = {
   actionId: z.number().int(),
   startedAt: z.number().int(),
   ringsAt: z.number().int(),
+  // Only a target time start can have a reminder, and only one still ahead.
+  remindsAt: z.number().int().nullable(),
 };
 
-const ringsAfterItStarted = ({
+// Whatever rings, rings after the start; the reminder before the alarm.
+const isInOrder = ({
   startedAt,
   ringsAt,
+  remindsAt,
 }: {
   startedAt: number;
   ringsAt: number;
-}) => ringsAt > startedAt;
+  remindsAt: number | null;
+}) =>
+  ringsAt > startedAt &&
+  (remindsAt === null || (startedAt < remindsAt && remindsAt < ringsAt));
 
 // What pressing an action saves.
-export const newStartSchema = z.object(startFields).refine(ringsAfterItStarted);
+export const newStartSchema = z.object(startFields).refine(isInOrder);
 
 export type NewStart = z.infer<typeof newStartSchema>;
 
 export const startSchema = z
   .object({ id: z.number().int(), ...startFields })
-  .refine(ringsAfterItStarted);
+  .refine(isInOrder);
 
 export type Start = z.infer<typeof startSchema>;
 
@@ -34,4 +41,5 @@ export const startAfterPress = (
   actionId: id,
   startedAt: pressedAt.getTime(),
   ringsAt: pressedAt.getTime() + minutes * 60_000,
+  remindsAt: null,
 });

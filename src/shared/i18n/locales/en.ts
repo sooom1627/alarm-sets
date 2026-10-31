@@ -87,6 +87,7 @@ export const en = {
     target: "Target time (no ring)",
     tomorrow: "Tomorrow {{time}}",
     reminderPast: "Already past, so it won't ring",
+    startAt: "Start, ring at {{time}}",
   },
   settings: {
     title: "Settings",
