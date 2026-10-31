@@ -1,5 +1,5 @@
-import { View } from "react-native";
+import { CreateScreen } from "@/features/actions/screens/create-screen";
 
 export default function CreateSheet() {
-  return <View className="bg-screen flex-1" />;
+  return <CreateScreen />;
 }

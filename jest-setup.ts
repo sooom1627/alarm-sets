@@ -26,7 +26,9 @@ jest.mock("expo-localization", () => ({
 }));
 initI18n("ja");
 
-// SQLite is out of process: back the key-value store with an in-memory map.
+// SQLite is out of process. Tables run on Node's SQLite in memory
+// (__mocks__/expo-sqlite.ts, applied automatically); the key-value store is
+// backed by an in-memory map.
 jest.mock("expo-sqlite/kv-store", () => {
   const store = new Map<string, string>();
   return {

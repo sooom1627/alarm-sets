@@ -1,8 +1,8 @@
-import { View } from "react-native";
-
 import { Stack, useRouter } from "expo-router";
 
 import { useTranslation } from "react-i18next";
+
+import { ActionListScreen } from "@/features/actions/screens/action-list-screen";
 
 export default function HomeTab() {
   const { t } = useTranslation();
@@ -10,7 +10,7 @@ export default function HomeTab() {
 
   return (
     <>
-      <View className="bg-screen flex-1" />
+      <ActionListScreen />
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button
           icon="gearshape"
