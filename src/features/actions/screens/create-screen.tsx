@@ -43,38 +43,40 @@ export const CreateScreen = () => {
     );
 
   return (
-    <View className="bg-screen flex-1">
-      <ScrollView
-        className="flex-1"
-        contentContainerClassName="gap-6 p-4"
-        keyboardShouldPersistTaps="handled"
-      >
-        <View className="gap-2">
-          <Text className="text-muted font-mono text-xs tracking-wider">
-            {t("create.name")}
-          </Text>
-          <TextInput
-            aria-label={t("create.name")}
-            value={name}
-            onChangeText={setName}
-            maxLength={actionNameMaxLength}
-            placeholder={t("create.namePlaceholder")}
-            placeholderTextColorClassName="accent-faint"
-            className="bg-card text-ink border-continuous h-14 rounded-[22px] px-5 text-[17px]"
-          />
-        </View>
-        <MinutesField minutes={minutes} onChange={setMinutes} />
-        <KindOptions kind={kind} minutes={minutes} onChange={setKind} />
-        {kind === "before" && (
-          <RemindField
-            isOn={isRemindOn}
-            minutes={remindMinutes}
-            onIsOnChange={setIsRemindOn}
-            onMinutesChange={setRemindMinutes}
-          />
-        )}
-      </ScrollView>
-      <View className="px-4 pt-2 pb-8">
+    // In a form sheet the ScrollView is the screen's root. react-native-screens
+    // sizes a root ScrollView to the sheet; a nested one is reset to the sheet's
+    // frame (legacy fallback in RNSScreen.mm), which hid the fields on iOS.
+    <ScrollView
+      className="bg-screen flex-1"
+      contentContainerClassName="grow gap-6 px-4 pt-4 pb-8"
+      keyboardShouldPersistTaps="handled"
+    >
+      <View className="gap-2">
+        <Text className="text-muted font-mono text-xs tracking-wider">
+          {t("create.name")}
+        </Text>
+        <TextInput
+          aria-label={t("create.name")}
+          value={name}
+          onChangeText={setName}
+          maxLength={actionNameMaxLength}
+          placeholder={t("create.namePlaceholder")}
+          placeholderTextColorClassName="accent-faint"
+          className="bg-card text-ink border-continuous h-14 rounded-[22px] px-5 text-[17px]"
+        />
+      </View>
+      <MinutesField minutes={minutes} onChange={setMinutes} />
+      <KindOptions kind={kind} minutes={minutes} onChange={setKind} />
+      {kind === "before" && (
+        <RemindField
+          isOn={isRemindOn}
+          minutes={remindMinutes}
+          onIsOnChange={setIsRemindOn}
+          onMinutesChange={setRemindMinutes}
+        />
+      )}
+      {/* mt-auto keeps Save at the bottom while the fields are shorter than the sheet. */}
+      <View className="mt-auto pt-2">
         <Pressable
           role="button"
           aria-label={t("create.save")}
@@ -98,6 +100,6 @@ export const CreateScreen = () => {
           </Text>
         </Pressable>
       </View>
-    </View>
+    </ScrollView>
   );
 };
