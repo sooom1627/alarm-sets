@@ -13,6 +13,7 @@ import type { Action } from "@/features/actions/schemas/action";
 import { formatClockTime } from "@/shared/utils/clock-time";
 
 import { RingTimeRow } from "../components/ring-time-row";
+import { useLastTarget } from "../hooks/use-last-target";
 import {
   firstTargetTime,
   isNextDay,
@@ -40,15 +41,31 @@ export const TargetTimeScreen = ({ actionId }: Props) => {
   }, [isMissing, back]);
 
   if (action === undefined) return null;
-  return <TargetTimeForm action={action} />;
+  return <TargetTimeLoader action={action} />;
 };
 
-const TargetTimeForm = ({ action }: { action: Action }) => {
+// The form starts from the target the action last started with, so it waits
+// for that read. Without one (or if it fails), it starts a little from now.
+const TargetTimeLoader = ({ action }: { action: Action }) => {
+  const { data: lastTarget, isPending } = useLastTarget(action.id);
+  if (isPending) return null;
+  return (
+    <TargetTimeForm
+      action={action}
+      initialTarget={lastTarget ?? firstTargetTime(action.minutes, new Date())}
+    />
+  );
+};
+
+type FormProps = {
+  action: Action;
+  initialTarget: TimeOfDay;
+};
+
+const TargetTimeForm = ({ action, initialTarget }: FormProps) => {
   const { t, i18n } = useTranslation();
   const { name, minutes, remindMinutes } = action;
-  const [target, setTarget] = useState<TimeOfDay>(() =>
-    firstTargetTime(minutes, new Date()),
-  );
+  const [target, setTarget] = useState(initialTarget);
   const now = new Date();
   const times = ringTimes({ target, minutes, remindMinutes }, now);
   const formatTime = (epochMs: number) => {

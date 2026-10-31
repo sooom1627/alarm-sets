@@ -7,6 +7,10 @@ import {
 } from "expo-router/testing-library";
 
 import { insertAction } from "@/features/actions/db/actions";
+import {
+  getLastTarget,
+  saveLastTarget,
+} from "@/features/starts/db/last-targets";
 import { listStarts } from "@/features/starts/db/starts";
 import { getDb } from "@/shared/db/db";
 
@@ -40,6 +44,8 @@ beforeEach(() => {
 afterEach(async () => {
   jest.useRealTimers();
   await getDb().execAsync("DELETE FROM actions");
+  await getLastTarget(0); // creates the table when no test saved one
+  await getDb().execAsync("DELETE FROM last_targets");
 });
 
 describe("opening the target time sheet", () => {
@@ -87,7 +93,16 @@ describe("the target time sheet", () => {
     ).toBeOnTheScreen();
   });
 
-  it("starts from the minutes from now, rounded up to 5 minutes", async () => {
+  it("starts from the target time the action last started with", async () => {
+    const { id } = await addLeaveHome(10);
+    await saveLastTarget(id, { hour: 8, minute: 0 });
+    await renderSheet(id);
+
+    expect(selectedTimeOfDay()).toBe("8:00");
+    expect(screen.getByLabelText("7:30 アラーム")).toBeOnTheScreen();
+  });
+
+  it("starts from the minutes from now, rounded up to 5 minutes, the first time", async () => {
     jest.setSystemTime(new Date(2026, 9, 31, 14, 3));
     const { id } = await addLeaveHome(null);
     await renderSheet(id);
