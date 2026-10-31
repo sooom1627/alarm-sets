@@ -48,6 +48,8 @@ export const CreateScreen = () => {
     // frame (legacy fallback in RNSScreen.mm), which hid the fields on iOS.
     <ScrollView
       className="bg-screen flex-1"
+      // Starts the fields below the sheet's native header instead of under it.
+      contentInsetAdjustmentBehavior="automatic"
       contentContainerClassName="grow gap-6 px-4 pt-4 pb-8"
       keyboardShouldPersistTaps="handled"
     >
