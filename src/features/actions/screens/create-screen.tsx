@@ -50,7 +50,7 @@ export const CreateScreen = () => {
       className="bg-screen flex-1"
       // Starts the fields below the sheet's native header instead of under it.
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerClassName="grow gap-6 px-4 pt-4 pb-8"
+      contentContainerClassName="grow gap-4 px-4 pt-2 pb-8"
       keyboardShouldPersistTaps="handled"
     >
       <View className="gap-2">

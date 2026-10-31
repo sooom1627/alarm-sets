@@ -1,7 +1,7 @@
 import { Pressable, Text, View } from "react-native";
 
 import { Host, Picker, Text as SwiftText } from "@expo/ui/swift-ui";
-import { pickerStyle, tag } from "@expo/ui/swift-ui/modifiers";
+import { clipped, frame, pickerStyle, tag } from "@expo/ui/swift-ui/modifiers";
 
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -14,6 +14,10 @@ const minuteOptions = Array.from(
   { length: actionMaxMinutes - actionMinMinutes + 1 },
   (_, index) => actionMinMinutes + index,
 );
+
+// About three rows of the wheel, a little over half its default 216pt, so the
+// whole sheet fits a 6.1-inch iPhone without scrolling.
+const wheelHeight = 120;
 
 const minutesSchema = z
   .number()
@@ -42,7 +46,11 @@ export const MinutesField = ({ minutes, onChange }: Props) => {
             onSelectionChange={(selection) =>
               onChange(minutesSchema.parse(selection))
             }
-            modifiers={[pickerStyle("wheel")]}
+            modifiers={[
+              pickerStyle("wheel"),
+              frame({ height: wheelHeight }),
+              clipped(),
+            ]}
           >
             {minuteOptions.map((option) => (
               <SwiftText key={option} modifiers={[tag(option)]}>
