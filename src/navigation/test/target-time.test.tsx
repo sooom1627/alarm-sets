@@ -4,6 +4,7 @@ import {
   fireEvent,
   renderRouter,
   screen,
+  waitFor,
 } from "expo-router/testing-library";
 
 import { insertAction } from "@/features/actions/db/actions";
@@ -44,6 +45,8 @@ beforeEach(() => {
 afterEach(async () => {
   jest.useRealTimers();
   await getDb().execAsync("DELETE FROM actions");
+  await listStarts(); // creates the table when no test started anything
+  await getDb().execAsync("DELETE FROM starts");
   await getLastTarget(0); // creates the table when no test saved one
   await getDb().execAsync("DELETE FROM last_targets");
 });
@@ -158,5 +161,68 @@ describe("the target time sheet", () => {
       screen.getByLabelText("5:55 リマインド もう過ぎているので鳴りません"),
     ).toBeOnTheScreen();
     expect(screen.getByLabelText("6:05 アラーム")).toBeOnTheScreen();
+  });
+});
+
+// Opens the sheet from the list, so closing it goes back there.
+const openFromList = async () => {
+  await renderRouter("./src/app", { initialUrl: "/" });
+  await fireEvent.press(
+    await screen.findByRole("button", {
+      name: "家を出る、目標時間の30分前に鳴る",
+    }),
+  );
+  await screen.findByText("目標時間は？");
+};
+
+describe("starting from the target time sheet", () => {
+  it("starts with the alarm and reminder times and closes", async () => {
+    const { id } = await addLeaveHome(10);
+    await openFromList();
+    await pickTimeOfDay(8, 0);
+
+    // Finding the sheet let some time pass; press at 6:00 exactly.
+    jest.setSystemTime(new Date(2026, 9, 31, 6, 0));
+    await fireEvent.press(
+      screen.getByRole("button", { name: "7:30 に鳴らしてスタート" }),
+    );
+
+    expect(await listStarts()).toEqual([
+      {
+        id: expect.any(Number),
+        actionId: id,
+        startedAt: new Date(2026, 9, 31, 6, 0).getTime(),
+        ringsAt: new Date(2026, 9, 31, 7, 30).getTime(),
+        remindsAt: new Date(2026, 9, 31, 7, 20).getTime(),
+      },
+    ]);
+    expect(await getLastTarget(id)).toEqual({ hour: 8, minute: 0 });
+    await waitFor(() => expect(isSheetShown("target-time")).toBe(false));
+    expect(
+      await screen.findByText("家を出る 7:30 に鳴ります"),
+    ).toBeOnTheScreen();
+  });
+
+  it("does not keep a reminder that has passed", async () => {
+    await addLeaveHome(10);
+    await openFromList();
+    await pickTimeOfDay(6, 35);
+
+    await fireEvent.press(
+      screen.getByRole("button", { name: "6:05 に鳴らしてスタート" }),
+    );
+
+    expect((await listStarts())[0].remindsAt).toBeNull();
+  });
+
+  it("says tomorrow on the button once today's alarm time has passed", async () => {
+    const { id } = await addLeaveHome(null);
+    await renderSheet(id);
+
+    await pickTimeOfDay(6, 20);
+
+    expect(
+      screen.getByRole("button", { name: "明日 5:50 に鳴らしてスタート" }),
+    ).toBeOnTheScreen();
   });
 });

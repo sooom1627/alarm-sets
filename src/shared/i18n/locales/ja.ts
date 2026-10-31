@@ -88,6 +88,7 @@ export const ja: Translation = {
     target: "目標時間（鳴らない）",
     tomorrow: "明日 {{time}}",
     reminderPast: "もう過ぎているので鳴りません",
+    startAt: "{{time}} に鳴らしてスタート",
   },
   settings: {
     title: "設定",
