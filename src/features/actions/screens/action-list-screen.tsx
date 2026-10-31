@@ -1,8 +1,20 @@
-import { Pressable, ScrollView, Text, View } from "react-native";
+import {
+  AccessibilityInfo,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
 
+import * as Haptics from "expo-haptics";
 import { Link } from "expo-router";
 
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner-native";
+
+import { useStartAction } from "@/features/starts/hooks/use-starts";
+import { startAfterPress } from "@/features/starts/schemas/start";
+import { formatClockTime } from "@/shared/utils/clock-time";
 
 import { ActionTile } from "../components/action-tile";
 import { useActions } from "../hooks/use-actions";
@@ -18,12 +30,34 @@ const toRows = (actions: Action[]) => {
 };
 
 export const ActionListScreen = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const {
     data: actions,
     isError: isActionsError,
     refetch: refetchActions,
   } = useActions();
+  const { mutate: startAction } = useStartAction();
+  // No confirmation: the press itself starts it (product.md 1.4).
+  const start = (action: Action) => {
+    const newStart = startAfterPress(action, new Date());
+    startAction(newStart, {
+      onSuccess: () => {
+        const started = t("actionList.started.title", {
+          name: action.name,
+          time: formatClockTime(newStart.ringsAt, i18n.language),
+        });
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        toast.success(started);
+        AccessibilityInfo.announceForAccessibility(started);
+      },
+      onError: () => {
+        toast.error(t("actionList.started.failed"));
+        AccessibilityInfo.announceForAccessibility(
+          t("actionList.started.failed"),
+        );
+      },
+    });
+  };
 
   return (
     <ScrollView
@@ -73,7 +107,13 @@ export const ActionListScreen = () => {
         toRows(actions).map((row) => (
           <View key={row[0].id} className="flex-row gap-3">
             {row.map((action) => (
-              <ActionTile key={action.id} action={action} />
+              <ActionTile
+                key={action.id}
+                action={action}
+                onPress={
+                  action.kind === "after" ? () => start(action) : undefined
+                }
+              />
             ))}
             {row.length === 1 && <View className="flex-1" />}
           </View>

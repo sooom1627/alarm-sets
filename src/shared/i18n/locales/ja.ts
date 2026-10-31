@@ -73,6 +73,10 @@ export const ja: Translation = {
       title: "行動を読み込めませんでした",
       retry: "もう一度",
     },
+    started: {
+      title: "{{name}} {{time}} に鳴ります",
+      failed: "スタートできませんでした",
+    },
   },
   settings: {
     title: "設定",

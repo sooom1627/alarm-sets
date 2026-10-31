@@ -1,6 +1,8 @@
 import { Stack, useRouter } from "expo-router";
 
 import { useTranslation } from "react-i18next";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Toaster } from "sonner-native";
 
 import { ActionListScreen } from "@/features/actions/screens/action-list-screen";
 
@@ -10,7 +12,12 @@ export default function HomeTab() {
 
   return (
     <>
-      <ActionListScreen />
+      {/* A provider inside the tab reads the tab's own safe area, which takes
+          in the tab bar, so bottom toasts sit just above the bar. */}
+      <SafeAreaProvider>
+        <ActionListScreen />
+        <Toaster position="bottom-center" duration={4000} />
+      </SafeAreaProvider>
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button
           icon="gearshape"

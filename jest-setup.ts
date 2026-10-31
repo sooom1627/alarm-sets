@@ -5,9 +5,11 @@ import { initI18n } from "@/shared/i18n/i18n";
 jest.mock("react-native-worklets", () =>
   jest.requireActual("react-native-worklets/src/mock"),
 );
-jest.mock("react-native-reanimated", () => {
-  return jest.requireActual("react-native-reanimated/mock");
-});
+jest.mock("react-native-reanimated", () => ({
+  ...jest.requireActual("react-native-reanimated/mock"),
+  // Missing from the mock; sonner-native reads it.
+  useReducedMotion: () => false,
+}));
 
 jest.mock("uniwind", () => ({
   withUniwind: <T>(Component: T) => Component,
@@ -23,6 +25,8 @@ jest.mock("uniwind", () => ({
 jest.mock("expo-localization", () => ({
   ...jest.requireActual("expo-localization"),
   getLocales: () => [{ languageTag: "ja-JP", languageCode: "ja" }],
+  // Times read as 14:20, as on a device set to the 24-hour clock.
+  getCalendars: () => [{ uses24hourClock: true }],
 }));
 initI18n("ja");
 

@@ -4,6 +4,7 @@ import { Stack } from "expo-router";
 
 import { QueryClientProvider } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { initI18n } from "@/shared/i18n/i18n";
 import { getInitialLanguage } from "@/shared/i18n/language";
@@ -20,26 +21,28 @@ export default function RootLayout() {
   const [queryClient] = useState(createQueryClient);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="create"
-          options={{
-            presentation: "formSheet",
-            sheetGrabberVisible: true,
-            title: t("create.sheetTitle"),
-          }}
-        />
-        <Stack.Screen
-          name="settings"
-          options={{
-            presentation: "formSheet",
-            sheetGrabberVisible: true,
-            title: t("settings.title"),
-          }}
-        />
-      </Stack>
-    </QueryClientProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <QueryClientProvider client={queryClient}>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="create"
+            options={{
+              presentation: "formSheet",
+              sheetGrabberVisible: true,
+              title: t("create.sheetTitle"),
+            }}
+          />
+          <Stack.Screen
+            name="settings"
+            options={{
+              presentation: "formSheet",
+              sheetGrabberVisible: true,
+              title: t("settings.title"),
+            }}
+          />
+        </Stack>
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }
