@@ -5,7 +5,6 @@ import { Stack } from "expo-router";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Toaster } from "sonner-native";
 
 import { initI18n } from "@/shared/i18n/i18n";
 import { getInitialLanguage } from "@/shared/i18n/language";
@@ -43,8 +42,6 @@ export default function RootLayout() {
             }}
           />
         </Stack>
-        {/* Toasts come from the top, like iOS banners, clear of the tab bar. */}
-        <Toaster position="top-center" duration={4000} />
       </QueryClientProvider>
     </GestureHandlerRootView>
   );
