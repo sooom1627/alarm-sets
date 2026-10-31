@@ -1,6 +1,10 @@
 module.exports = {
   preset: "jest-expo",
   passWithNoTests: true,
+  // On GitHub Actions, failed tests also show as annotations on the PR.
+  reporters: process.env.GITHUB_ACTIONS
+    ? ["default", "github-actions"]
+    : ["default"],
   setupFilesAfterEnv: ["./jest-setup.ts"],
   testPathIgnorePatterns: [
     "/node_modules/",
