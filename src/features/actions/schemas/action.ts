@@ -10,18 +10,43 @@ export const actionKindSchema = z.enum(["after", "before"]);
 
 export type ActionKind = z.infer<typeof actionKindSchema>;
 
-// What the create sheet saves.
-export const newActionSchema = z.object({
+export const actionMinRemindMinutes = 5;
+export const actionMaxRemindMinutes = 60;
+export const actionRemindStep = 5;
+
+const actionFields = {
   name: z.string().trim().min(1).max(actionNameMaxLength),
   minutes: z.number().int().min(actionMinMinutes).max(actionMaxMinutes),
   kind: actionKindSchema,
-});
+  // Rings this many minutes before the alarm, so it may exceed `minutes`.
+  // Only a target time action has one; otherwise it is null.
+  remindMinutes: z
+    .number()
+    .int()
+    .min(actionMinRemindMinutes)
+    .max(actionMaxRemindMinutes)
+    .multipleOf(actionRemindStep)
+    .nullable(),
+};
+
+const hasReminderOnlyBeforeTarget = ({
+  kind,
+  remindMinutes,
+}: {
+  kind: ActionKind;
+  remindMinutes: number | null;
+}) => kind === "before" || remindMinutes === null;
+
+// What the create sheet saves.
+export const newActionSchema = z
+  .object(actionFields)
+  .refine(hasReminderOnlyBeforeTarget);
 
 export type NewAction = z.infer<typeof newActionSchema>;
 
-export const actionSchema = newActionSchema.extend({
-  id: z.number().int(),
-});
+export const actionSchema = z
+  .object({ id: z.number().int(), ...actionFields })
+  .refine(hasReminderOnlyBeforeTarget);
 
 export type Action = z.infer<typeof actionSchema>;
 

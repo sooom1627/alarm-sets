@@ -1,6 +1,11 @@
 import { actionSchema, newActionSchema } from "../action";
 
-const valid = { name: "家を出る", minutes: 30, kind: "before" };
+const valid = {
+  name: "家を出る",
+  minutes: 30,
+  kind: "before",
+  remindMinutes: null,
+};
 
 describe("newActionSchema", () => {
   it("accepts a name, minutes and kind", () => {
@@ -55,6 +60,42 @@ describe("newActionSchema", () => {
   });
 });
 
+describe("newActionSchema reminder", () => {
+  it("accepts a reminder of 5 to 60 minutes in steps of 5 before a target time", () => {
+    for (const remindMinutes of [5, 10, 45, 60]) {
+      expect(
+        newActionSchema.safeParse({ ...valid, remindMinutes }).success,
+      ).toBe(true);
+    }
+    for (const remindMinutes of [0, 4, 7, 65]) {
+      expect(
+        newActionSchema.safeParse({ ...valid, remindMinutes }).success,
+      ).toBe(false);
+    }
+  });
+
+  it("allows a reminder longer than the minutes before", () => {
+    expect(
+      newActionSchema.safeParse({ ...valid, minutes: 30, remindMinutes: 45 })
+        .success,
+    ).toBe(true);
+  });
+
+  it("has no reminder when it rings after pressing", () => {
+    expect(
+      newActionSchema.safeParse({
+        ...valid,
+        kind: "after",
+        remindMinutes: null,
+      }).success,
+    ).toBe(true);
+    expect(
+      newActionSchema.safeParse({ ...valid, kind: "after", remindMinutes: 10 })
+        .success,
+    ).toBe(false);
+  });
+});
+
 describe("actionSchema", () => {
   it("adds the stored id", () => {
     expect(actionSchema.parse({ ...valid, id: 1 })).toEqual({
@@ -62,5 +103,13 @@ describe("actionSchema", () => {
       id: 1,
     });
     expect(actionSchema.safeParse(valid).success).toBe(false);
+    expect(
+      actionSchema.safeParse({
+        ...valid,
+        id: 1,
+        kind: "after",
+        remindMinutes: 10,
+      }).success,
+    ).toBe(false);
   });
 });

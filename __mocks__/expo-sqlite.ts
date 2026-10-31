@@ -26,6 +26,10 @@ export const openDatabaseSync = () => {
         changes: Number(changes),
       };
     },
+    getFirstAsync: async (
+      source: string,
+      ...params: (BindValue | BindValue[])[]
+    ) => db.prepare(source).get(...toArgs(params)) ?? null,
     getAllAsync: async (
       source: string,
       ...params: (BindValue | BindValue[])[]

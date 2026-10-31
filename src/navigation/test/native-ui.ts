@@ -135,3 +135,24 @@ export const selectPickerOption = async (label: string) => {
     });
   });
 };
+
+// A SwiftUI Toggle (@expo/ui) reports a flip with an `isOnChange` event.
+const findToggle = () =>
+  screen.container.queryAll(
+    (node) =>
+      typeof node.props.onIsOnChange === "function" && "isOn" in node.props,
+  )[0];
+
+export const isToggleShown = () => findToggle() !== undefined;
+
+export const isToggleOn = () => findToggle()?.props.isOn === true;
+
+export const flipToggle = async () => {
+  const toggle = findToggle();
+  if (!toggle) throw new Error("No toggle");
+  await act(async () => {
+    fireEvent(toggle, "isOnChange", {
+      nativeEvent: { isOn: toggle.props.isOn !== true },
+    });
+  });
+};

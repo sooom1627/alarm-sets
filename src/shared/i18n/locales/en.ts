@@ -25,6 +25,11 @@ export const en = {
         example: "e.g. Remind me {{minutes}} min before leaving home",
       },
     },
+    remind: "Reminder",
+    remindLead: "Before it rings",
+    remindValue: "{{minutes}} min",
+    remindDecrease: "Decrease reminder",
+    remindIncrease: "Increase reminder",
     save: "Save",
   },
   actionList: {
