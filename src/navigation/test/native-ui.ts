@@ -161,3 +161,32 @@ export const flipToggle = async () => {
     });
   });
 };
+
+// A SwiftUI DatePicker (@expo/ui) holds its date as an ISO string and reports
+// a turn of its wheels with a `dateChange` event.
+const findDatePicker = () => {
+  const [picker] = screen.container.queryAll(
+    (node) =>
+      typeof node.props.onDateChange === "function" &&
+      "displayedComponents" in node.props,
+  );
+  if (!picker) throw new Error("No date picker");
+  return picker;
+};
+
+// The picked time of day, as "8:00".
+export const selectedTimeOfDay = () => {
+  const date = new Date(findDatePicker().props.selection as string);
+  return `${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")}`;
+};
+
+export const pickTimeOfDay = async (hour: number, minute: number) => {
+  const picker = findDatePicker();
+  const date = new Date(picker.props.selection as string);
+  date.setHours(hour, minute, 0, 0);
+  await act(async () => {
+    fireEvent(picker, "dateChange", {
+      nativeEvent: { date: date.toISOString() },
+    });
+  });
+};

@@ -7,7 +7,7 @@ import {
 } from "react-native";
 
 import * as Haptics from "expo-haptics";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner-native";
@@ -37,6 +37,7 @@ export const ActionListScreen = () => {
     refetch: refetchActions,
   } = useActions();
   const { mutate: startAction } = useStartAction();
+  const { push } = useRouter();
   // No confirmation: the press itself starts it (product.md 1.4).
   const start = (action: Action) => {
     const newStart = startAfterPress(action, new Date());
@@ -110,8 +111,13 @@ export const ActionListScreen = () => {
               <ActionTile
                 key={action.id}
                 action={action}
-                onPress={
-                  action.kind === "after" ? () => start(action) : undefined
+                onPress={() =>
+                  action.kind === "after"
+                    ? start(action)
+                    : push({
+                        pathname: "/target-time",
+                        params: { actionId: action.id },
+                      })
                 }
               />
             ))}

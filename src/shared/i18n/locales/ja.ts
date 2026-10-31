@@ -78,6 +78,17 @@ export const ja: Translation = {
       failed: "スタートできませんでした",
     },
   },
+  targetTime: {
+    question: "目標時間は？",
+    hint: "「{{name}}」の時間を入れると、その {{minutes}} 分前に鳴ります",
+    pickerLabel: "目標時間",
+    ringTimes: "鳴る時刻",
+    reminder: "リマインド",
+    alarm: "アラーム",
+    target: "目標時間（鳴らない）",
+    tomorrow: "明日 {{time}}",
+    reminderPast: "もう過ぎているので鳴りません",
+  },
   settings: {
     title: "設定",
     language: "言語",

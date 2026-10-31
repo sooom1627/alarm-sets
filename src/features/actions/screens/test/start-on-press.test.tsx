@@ -141,21 +141,3 @@ describe("pressing an action that rings minutes after it is pressed", () => {
     }
   });
 });
-
-describe("pressing an action that rings minutes before a target time", () => {
-  it("does not start yet", async () => {
-    await insertAction({
-      name: "家を出る",
-      minutes: 30,
-      kind: "before",
-      remindMinutes: null,
-    });
-    await renderList();
-
-    const tile =
-      await screen.findByLabelText("家を出る、目標時間の30分前に鳴る");
-
-    expect(tile).not.toHaveProp("role", "button");
-    expect(screen.queryByRole("button", { name: /家を出る/ })).toBeNull();
-  });
-});
