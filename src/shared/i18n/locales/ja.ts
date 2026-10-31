@@ -12,9 +12,6 @@ export const ja: Translation = {
     namePlaceholder: "例: 家を出る",
     minutes: "時間",
     minutesValue: "{{minutes}} 分",
-    minutesUnit: "分",
-    decrease: "減らす",
-    increase: "増やす",
     whenToRing: "いつ鳴らしますか？",
     kinds: {
       after: {

@@ -11,9 +11,6 @@ export const en = {
     namePlaceholder: "e.g. Leave home",
     minutes: "Time",
     minutesValue: "{{minutes}} min",
-    minutesUnit: "min",
-    decrease: "Decrease",
-    increase: "Increase",
     whenToRing: "When should it ring?",
     kinds: {
       after: {

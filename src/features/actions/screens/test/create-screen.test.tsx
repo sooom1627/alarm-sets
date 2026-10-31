@@ -1,6 +1,11 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, userEvent } from "@testing-library/react-native";
 
+import {
+  pickerOptionLabels,
+  selectedPickerOptionLabel,
+  selectPickerOption,
+} from "@/navigation/test/native-ui";
 import { createQueryClient } from "@/shared/query/query-client";
 
 import { CreateScreen } from "../create-screen";
@@ -17,15 +22,12 @@ const renderCreateScreen = async () => {
   return { user };
 };
 
-const minutesValue = () =>
-  screen.getByLabelText("時間").props["aria-valuetext"] as string;
-
 describe("CreateScreen inputs", () => {
   it("shows the name, the minutes and when to ring on one screen", async () => {
     await renderCreateScreen();
 
     expect(screen.getByPlaceholderText("例: 家を出る")).toBeOnTheScreen();
-    expect(minutesValue()).toBe("30 分");
+    expect(selectedPickerOptionLabel()).toBe("30 分");
     expect(screen.getByText("いつ鳴らしますか？")).toBeOnTheScreen();
     // Both kinds are offered right away; the kind is not chosen first.
     expect(
@@ -36,12 +38,21 @@ describe("CreateScreen inputs", () => {
     ).not.toBeChecked();
   });
 
+  it("offers every minute from 1 to 240 on the wheel", async () => {
+    await renderCreateScreen();
+
+    const labels = pickerOptionLabels();
+    expect(labels).toHaveLength(240);
+    expect(labels[0]).toBe("1 分");
+    expect(labels.at(-1)).toBe("240 分");
+  });
+
   it("puts the chosen minutes into both choices", async () => {
-    const { user } = await renderCreateScreen();
+    await renderCreateScreen();
 
-    await user.press(screen.getByRole("button", { name: "45" }));
+    await selectPickerOption("45 分");
 
-    expect(minutesValue()).toBe("45 分");
+    expect(selectedPickerOptionLabel()).toBe("45 分");
     expect(
       screen.getByRole("radio", { name: /押してから 45 分後に鳴らす/ }),
     ).toBeOnTheScreen();
@@ -51,34 +62,6 @@ describe("CreateScreen inputs", () => {
     expect(
       screen.getByText("例: 家を出る 45 分前に知らせる"),
     ).toBeOnTheScreen();
-    expect(screen.getByRole("button", { name: "45" })).toBeSelected();
-  });
-
-  it("steps by 5 from 10 up and by 1 below 10", async () => {
-    const { user } = await renderCreateScreen();
-    const increase = screen.getByRole("button", { name: "増やす" });
-    const decrease = screen.getByRole("button", { name: "減らす" });
-
-    await user.press(increase);
-    expect(minutesValue()).toBe("35 分");
-
-    await user.press(screen.getByRole("button", { name: "10" }));
-    await user.press(decrease);
-    expect(minutesValue()).toBe("9 分");
-
-    await user.press(increase);
-    expect(minutesValue()).toBe("10 分");
-  });
-
-  it("keeps the minutes between 1 and 240", async () => {
-    const { user } = await renderCreateScreen();
-    const decrease = screen.getByRole("button", { name: "減らす" });
-
-    await user.press(screen.getByRole("button", { name: "5" }));
-    for (let i = 0; i < 5; i++) await user.press(decrease);
-
-    expect(minutesValue()).toBe("1 分");
-    expect(decrease).toBeDisabled();
   });
 
   it("chooses the target time kind", async () => {
