@@ -38,5 +38,6 @@ export const insertAction = async (action: NewAction): Promise<Action> => {
     action.minutes,
     action.kind,
   );
-  return { id: lastInsertRowId, ...action };
+  const { name, minutes, kind } = action;
+  return { id: lastInsertRowId, name, minutes, kind };
 };

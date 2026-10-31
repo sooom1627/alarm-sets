@@ -26,9 +26,12 @@ export const CreateScreen = () => {
 
   // On failure the sheet stays open with what was entered.
   const save = () =>
-    createAction(newActionSchema.parse({ name, minutes, kind }), {
-      onSuccess: () => back(),
-    });
+    createAction(
+      newActionSchema.parse({ name, minutes, kind, remindMinutes: null }),
+      {
+        onSuccess: () => back(),
+      },
+    );
 
   return (
     <View className="bg-screen flex-1">

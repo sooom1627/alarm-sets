@@ -16,6 +16,7 @@ describe("actions db", () => {
       name: "家を出る",
       minutes: 30,
       kind: "before",
+      remindMinutes: null,
     });
 
     expect(saved).toEqual({
@@ -28,9 +29,24 @@ describe("actions db", () => {
   });
 
   it("lists actions in the order they were made", async () => {
-    await insertAction({ name: "昼寝", minutes: 20, kind: "after" });
-    await insertAction({ name: "家を出る", minutes: 30, kind: "before" });
-    await insertAction({ name: "お茶を淹れる", minutes: 4, kind: "after" });
+    await insertAction({
+      name: "昼寝",
+      minutes: 20,
+      kind: "after",
+      remindMinutes: null,
+    });
+    await insertAction({
+      name: "家を出る",
+      minutes: 30,
+      kind: "before",
+      remindMinutes: null,
+    });
+    await insertAction({
+      name: "お茶を淹れる",
+      minutes: 4,
+      kind: "after",
+      remindMinutes: null,
+    });
 
     const names = (await listActions()).map(({ name }) => name);
     expect(names).toEqual(["昼寝", "家を出る", "お茶を淹れる"]);

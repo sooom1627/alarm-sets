@@ -44,6 +44,7 @@ describe("useActions / useCreateAction", () => {
         name: "昼寝",
         minutes: 20,
         kind: "after",
+        remindMinutes: null,
       }),
     );
 
