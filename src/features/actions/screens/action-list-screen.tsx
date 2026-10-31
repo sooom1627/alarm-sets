@@ -12,6 +12,8 @@ import * as Haptics from "expo-haptics";
 import { Link } from "expo-router";
 
 import { useTranslation } from "react-i18next";
+import { SafeAreaListener } from "react-native-safe-area-context";
+import { withUniwind } from "uniwind";
 
 import { useStartAction } from "@/features/starts/hooks/use-starts";
 import { startAfterPress } from "@/features/starts/schemas/start";
@@ -26,6 +28,8 @@ import { useActions } from "../hooks/use-actions";
 import type { Action } from "../schemas/action";
 
 const noticeMs = 4000;
+
+const StyledSafeAreaListener = withUniwind(SafeAreaListener);
 
 // Two tiles per row, in the order the actions were made.
 const toRows = (actions: Action[]) => {
@@ -46,6 +50,9 @@ export const ActionListScreen = () => {
   const { mutate: startAction } = useStartAction();
   // Each press sets a new object, so its 4 seconds start over.
   const [notice, setNotice] = useState<StartNoticeContent | null>(null);
+  // The tab screen runs under the tab bar, so its own safe area (not the
+  // window's) is what keeps the notice above the bar.
+  const [bottomInset, setBottomInset] = useState(0);
 
   useEffect(() => {
     if (notice === null) return;
@@ -75,7 +82,10 @@ export const ActionListScreen = () => {
   };
 
   return (
-    <View className="flex-1">
+    <StyledSafeAreaListener
+      className="flex-1"
+      onChange={({ insets }) => setBottomInset(insets.bottom)}
+    >
       <ScrollView
         className="bg-grad flex-1"
         contentContainerClassName="gap-3 p-4"
@@ -135,7 +145,9 @@ export const ActionListScreen = () => {
             </View>
           ))}
       </ScrollView>
-      {notice !== null && <StartNotice notice={notice} />}
-    </View>
+      {notice !== null && (
+        <StartNotice notice={notice} bottomInset={bottomInset} />
+      )}
+    </StyledSafeAreaListener>
   );
 };

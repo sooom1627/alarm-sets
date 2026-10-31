@@ -1,29 +1,25 @@
 import { Text, View } from "react-native";
 
 import { Trans, useTranslation } from "react-i18next";
-import { SafeAreaView } from "react-native-screens/experimental";
-import { withUniwind } from "uniwind";
-
-const StyledSafeAreaView = withUniwind(SafeAreaView);
 
 export type StartNoticeContent =
   { kind: "started"; name: string; time: string } | { kind: "failed" };
 
 type Props = {
   notice: StartNoticeContent;
+  // The screen's bottom safe area, which takes in the tab bar.
+  bottomInset: number;
 };
 
-// Shown for a few seconds above the tab bar after pressing an action. The
-// native safe area view keeps it clear of the tab bar, which the screen's
-// content runs under on iOS.
-export const StartNotice = ({ notice }: Props) => {
+// Shown for a few seconds just above the tab bar after pressing an action.
+export const StartNotice = ({ notice, bottomInset }: Props) => {
   const { t } = useTranslation();
 
   return (
-    <StyledSafeAreaView
-      edges={{ bottom: true }}
+    <View
       pointerEvents="box-none"
-      className="absolute inset-0 justify-end px-4 pb-3"
+      className="absolute inset-x-4"
+      style={{ bottom: bottomInset + 12 }}
     >
       <View
         accessible
@@ -51,6 +47,6 @@ export const StartNotice = ({ notice }: Props) => {
           </Text>
         )}
       </View>
-    </StyledSafeAreaView>
+    </View>
   );
 };
