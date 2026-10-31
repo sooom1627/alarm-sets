@@ -30,10 +30,10 @@ Figma は使わない。色・余白・トークンはコード（Uniwind）側�
 
 ## 画面一覧
 
-| 画面                                   | 出し方 |
-| -------------------------------------- | ------ |
-| [行動の一覧](./screens/action-list.md) | タブ   |
-| [動いているもの](./screens/running.md) | タブ   |
-| [作る](./screens/create.md)            | シート |
-| 目標時間を聞く                         | シート |
-| [設定](./screens/settings.md)          | シート |
+| 画面                                       | 出し方 |
+| ------------------------------------------ | ------ |
+| [行動の一覧](./screens/action-list.md)     | タブ   |
+| [動いているもの](./screens/running.md)     | タブ   |
+| [作る](./screens/create.md)                | シート |
+| [目標時間を聞く](./screens/target-time.md) | シート |
+| [設定](./screens/settings.md)              | シート |
