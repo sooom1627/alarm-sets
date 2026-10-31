@@ -56,6 +56,8 @@ export const actionKindLabelKeys = {
   after: {
     label: "create.kinds.after.label",
     example: "create.kinds.after.example",
+    choice: "create.kinds.after.choice",
+    wheelMinutes: "create.kinds.after.wheelMinutes",
     tag: "actionList.kinds.after.tag",
     unit: "actionList.kinds.after.unit",
     spoken: "actionList.kinds.after.spoken",
@@ -63,11 +65,16 @@ export const actionKindLabelKeys = {
   before: {
     label: "create.kinds.before.label",
     example: "create.kinds.before.example",
+    choice: "create.kinds.before.choice",
+    wheelMinutes: "create.kinds.before.wheelMinutes",
     tag: "actionList.kinds.before.tag",
     unit: "actionList.kinds.before.unit",
     spoken: "actionList.kinds.before.spoken",
   },
 } as const satisfies Record<
   ActionKind,
-  Record<"label" | "example" | "tag" | "unit" | "spoken", string>
+  Record<
+    "label" | "example" | "choice" | "wheelMinutes" | "tag" | "unit" | "spoken",
+    string
+  >
 >;

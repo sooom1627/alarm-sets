@@ -18,9 +18,7 @@ const saveAndWaitForList = async (spoken: string) => {
 };
 
 const chooseTargetTime = () =>
-  fireEvent.press(
-    screen.getByRole("radio", { name: /目標時間の 30 分前に鳴らす/ }),
-  );
+  fireEvent.press(screen.getByRole("radio", { name: "目標時間の" }));
 
 afterEach(async () => {
   await getDb().execAsync("DELETE FROM actions");
@@ -54,9 +52,7 @@ describe("saving a reminder", () => {
     await openCreateSheet("昼寝");
     await chooseTargetTime();
     await flipToggle();
-    await fireEvent.press(
-      screen.getByRole("radio", { name: /押してから 30 分後に鳴らす/ }),
-    );
+    await fireEvent.press(screen.getByRole("radio", { name: "押してから" }));
 
     await saveAndWaitForList("昼寝、押してから30分後に鳴る");
 

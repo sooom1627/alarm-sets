@@ -1,100 +1,108 @@
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+
+import { Host, HStack, Picker, Text as SwiftText } from "@expo/ui/swift-ui";
+import { clipped, frame, pickerStyle, tag } from "@expo/ui/swift-ui/modifiers";
 
 import { useTranslation } from "react-i18next";
+import { z } from "zod";
 
-import { MinusIcon, PlusIcon } from "@/shared/components/icons";
+import {
+  actionKindLabelKeys,
+  actionMaxMinutes,
+  actionMinMinutes,
+  type ActionKind,
+} from "../schemas/action";
 
-import { actionMaxMinutes, actionMinMinutes } from "../schemas/action";
+// Two wheels like the iOS timer: hours 0–4 and minutes 0–59.
+const hourOptions = Array.from(
+  { length: Math.floor(actionMaxMinutes / 60) + 1 },
+  (_, index) => index,
+);
+const minuteOptions = Array.from({ length: 60 }, (_, index) => index);
 
-const PRESETS = [5, 10, 15, 20, 30, 45, 60];
+// About five rows of each wheel; the default is 216pt.
+const wheelHeight = 160;
 
-// Below 10 the stepper moves by 1, from 10 up by 5.
-const stepUp = (minutes: number) =>
-  Math.min(actionMaxMinutes, minutes + (minutes < 10 ? 1 : 5));
-const stepDown = (minutes: number) =>
-  Math.max(actionMinMinutes, minutes - (minutes <= 10 ? 1 : 5));
+const wheelValueSchema = z.number().int().min(0);
+
+// 0 h 0 min becomes 1 min and 4 h 30 min becomes 4 h, so the total stays in 1–240.
+const toTotalMinutes = (hours: number, minutes: number) =>
+  Math.min(actionMaxMinutes, Math.max(actionMinMinutes, hours * 60 + minutes));
 
 type Props = {
   minutes: number;
+  kind: ActionKind;
   onChange: (minutes: number) => void;
 };
 
-export const MinutesField = ({ minutes, onChange }: Props) => {
+export const MinutesField = ({ minutes, kind, onChange }: Props) => {
   const { t } = useTranslation();
-  const canDecrease = minutes > actionMinMinutes;
-  const canIncrease = minutes < actionMaxMinutes;
+  const hours = Math.floor(minutes / 60);
+  const restMinutes = minutes % 60;
+  const keys = actionKindLabelKeys[kind];
 
   return (
     <View className="gap-2">
       <Text className="text-muted font-mono text-xs tracking-wider">
         {t("create.minutes")}
       </Text>
-      <View className="bg-card border-continuous flex-row items-center rounded-[22px] py-2 pr-2 pl-5">
-        <View
-          className="flex-1 flex-row items-baseline gap-1"
-          aria-label={t("create.minutes")}
-          aria-valuetext={t("create.minutesValue", { minutes })}
-        >
-          <Text className="text-ink font-mono-light text-4xl">{minutes}</Text>
-          <Text className="text-muted text-base">
-            {t("create.minutesUnit")}
+      {/* The sentence on top reads the wheels as "○ 分後" or "○ 分前". */}
+      <View className="bg-card border-continuous gap-1 rounded-[22px] px-3 pt-4 pb-2">
+        <View className="gap-0.5 px-2">
+          <Text className="text-ink text-base font-bold">
+            {t(keys.label, { minutes })}
+          </Text>
+          <Text className="text-muted text-sm">
+            {t(keys.example, { minutes })}
           </Text>
         </View>
-        <Pressable
-          role="button"
-          aria-label={t("create.decrease")}
-          aria-disabled={!canDecrease}
-          disabled={!canDecrease}
-          onPress={() => onChange(stepDown(minutes))}
-          className="size-11 items-center justify-center rounded-full"
-        >
-          <MinusIcon
-            size={20}
-            colorClassName={canDecrease ? "accent-ink" : "accent-faint"}
-          />
-        </Pressable>
-        <Pressable
-          role="button"
-          aria-label={t("create.increase")}
-          aria-disabled={!canIncrease}
-          disabled={!canIncrease}
-          onPress={() => onChange(stepUp(minutes))}
-          className="size-11 items-center justify-center rounded-full"
-        >
-          <PlusIcon
-            size={20}
-            colorClassName={canIncrease ? "accent-ink" : "accent-faint"}
-          />
-        </Pressable>
-      </View>
-      <View className="flex-row flex-wrap gap-2">
-        {PRESETS.map((preset) => {
-          const isSelected = preset === minutes;
-          return (
-            <Pressable
-              key={preset}
-              role="button"
-              aria-label={String(preset)}
-              aria-selected={isSelected}
-              onPress={() => onChange(preset)}
-              className={
-                isSelected
-                  ? "bg-sun h-11 min-w-11 items-center justify-center rounded-full px-3"
-                  : "bg-chip h-11 min-w-11 items-center justify-center rounded-full px-3"
+        <Host matchContents={{ vertical: true }}>
+          <HStack spacing={0}>
+            <Picker
+              label={t("create.hoursLabel")}
+              selection={hours}
+              onSelectionChange={(selection) =>
+                onChange(
+                  toTotalMinutes(
+                    wheelValueSchema.parse(selection),
+                    restMinutes,
+                  ),
+                )
               }
+              modifiers={[
+                pickerStyle("wheel"),
+                frame({ height: wheelHeight }),
+                clipped(),
+              ]}
             >
-              <Text
-                className={
-                  isSelected
-                    ? "text-on-sun font-mono text-sm"
-                    : "text-ink font-mono text-sm"
-                }
-              >
-                {preset}
-              </Text>
-            </Pressable>
-          );
-        })}
+              {hourOptions.map((option) => (
+                <SwiftText key={option} modifiers={[tag(option)]}>
+                  {t("create.hoursValue", { hours: option })}
+                </SwiftText>
+              ))}
+            </Picker>
+            <Picker
+              label={t("create.minutesLabel")}
+              selection={restMinutes}
+              onSelectionChange={(selection) =>
+                onChange(
+                  toTotalMinutes(hours, wheelValueSchema.parse(selection)),
+                )
+              }
+              modifiers={[
+                pickerStyle("wheel"),
+                frame({ height: wheelHeight }),
+                clipped(),
+              ]}
+            >
+              {minuteOptions.map((option) => (
+                <SwiftText key={option} modifiers={[tag(option)]}>
+                  {t(keys.wheelMinutes, { minutes: option })}
+                </SwiftText>
+              ))}
+            </Picker>
+          </HStack>
+        </Host>
       </View>
     </View>
   );

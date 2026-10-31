@@ -95,13 +95,15 @@ type Modifier = { $type: string; tag?: string | number };
 
 const modifiersOf = (node: Node) => (node.props.modifiers ?? []) as Modifier[];
 
-const findPicker = () => {
+// With several pickers on screen, name the one you mean by its label.
+const findPicker = (pickerLabel?: string) => {
   const [picker] = screen.container.queryAll(
     (node) =>
       typeof node.props.onSelectionChange === "function" &&
-      "selection" in node.props,
+      "selection" in node.props &&
+      (pickerLabel === undefined || node.props.label === pickerLabel),
   );
-  if (!picker) throw new Error("No picker");
+  if (!picker) throw new Error(`No picker ${pickerLabel ?? ""}`);
   return picker;
 };
 
@@ -115,18 +117,21 @@ const optionsOf = (
       tag: modifiersOf(node).find((m) => m.$type === "tag")?.tag,
     }));
 
-export const pickerOptionLabels = () =>
-  optionsOf(findPicker()).map((option) => option.label);
+export const pickerOptionLabels = (pickerLabel?: string) =>
+  optionsOf(findPicker(pickerLabel)).map((option) => option.label);
 
-export const selectedPickerOptionLabel = () => {
-  const picker = findPicker();
+export const selectedPickerOptionLabel = (pickerLabel?: string) => {
+  const picker = findPicker(pickerLabel);
   return optionsOf(picker).find(
     (option) => option.tag === picker.props.selection,
   )?.label;
 };
 
-export const selectPickerOption = async (label: string) => {
-  const picker = findPicker();
+export const selectPickerOption = async (
+  label: string,
+  pickerLabel?: string,
+) => {
+  const picker = findPicker(pickerLabel);
   const option = optionsOf(picker).find((item) => item.label === label);
   if (!option) throw new Error(`No picker option labelled "${label}"`);
   await act(async () => {

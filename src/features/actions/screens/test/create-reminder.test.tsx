@@ -23,7 +23,7 @@ const renderCreateScreen = async () => {
 };
 
 const chooseTargetTime = (user: ReturnType<typeof userEvent.setup>) =>
-  user.press(screen.getByRole("radio", { name: /目標時間の 30 分前に鳴らす/ }));
+  user.press(screen.getByRole("radio", { name: "目標時間の" }));
 
 const remindValue = () =>
   screen.getByLabelText("リマインド").props["aria-valuetext"] as string;
@@ -78,9 +78,7 @@ describe("CreateScreen reminder", () => {
     await chooseTargetTime(user);
     await flipToggle();
 
-    await user.press(
-      screen.getByRole("radio", { name: /押してから 30 分後に鳴らす/ }),
-    );
+    await user.press(screen.getByRole("radio", { name: "押してから" }));
 
     expect(isToggleShown()).toBe(false);
     expect(screen.queryByText("鳴る時間の")).toBeNull();

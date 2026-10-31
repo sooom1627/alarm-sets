@@ -1,6 +1,11 @@
 import { QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, userEvent } from "@testing-library/react-native";
 
+import {
+  pickerOptionLabels,
+  selectedPickerOptionLabel,
+  selectPickerOption,
+} from "@/navigation/test/native-ui";
 import { createQueryClient } from "@/shared/query/query-client";
 
 import { CreateScreen } from "../create-screen";
@@ -17,83 +22,74 @@ const renderCreateScreen = async () => {
   return { user };
 };
 
-const minutesValue = () =>
-  screen.getByLabelText("時間").props["aria-valuetext"] as string;
+// The hours and minutes wheels, read together as "0 時間 30 分".
+const wheelTime = () =>
+  `${selectedPickerOptionLabel("時")} ${selectedPickerOptionLabel("分")}`;
 
 describe("CreateScreen inputs", () => {
-  it("shows the name, the minutes and when to ring on one screen", async () => {
+  it("shows the name, when to ring and the time on one screen", async () => {
     await renderCreateScreen();
 
     expect(screen.getByPlaceholderText("例: 家を出る")).toBeOnTheScreen();
-    expect(minutesValue()).toBe("30 分");
     expect(screen.getByText("いつ鳴らしますか？")).toBeOnTheScreen();
-    // Both kinds are offered right away; the kind is not chosen first.
-    expect(
-      screen.getByRole("radio", { name: /押してから 30 分後に鳴らす/ }),
-    ).toBeChecked();
-    expect(
-      screen.getByRole("radio", { name: /目標時間の 30 分前に鳴らす/ }),
-    ).not.toBeChecked();
+    // Both kinds are offered right away; "after pressing" is chosen first.
+    expect(screen.getByRole("radio", { name: "押してから" })).toBeChecked();
+    expect(screen.getByRole("radio", { name: "目標時間の" })).not.toBeChecked();
+    expect(wheelTime()).toBe("0 時間 30 分後");
+    expect(screen.getByText("押してから 30 分後に鳴らす")).toBeOnTheScreen();
+    expect(screen.getByText("例: 昼寝して 30 分後に起こす")).toBeOnTheScreen();
   });
 
-  it("puts the chosen minutes into both choices", async () => {
+  it("splits the time into an hours wheel and a minutes wheel", async () => {
+    await renderCreateScreen();
+
+    expect(pickerOptionLabels("時")).toEqual([
+      "0 時間",
+      "1 時間",
+      "2 時間",
+      "3 時間",
+      "4 時間",
+    ]);
+    const minuteLabels = pickerOptionLabels("分");
+    expect(minuteLabels).toHaveLength(60);
+    expect(minuteLabels[0]).toBe("0 分後");
+    expect(minuteLabels.at(-1)).toBe("59 分後");
+  });
+
+  it("adds the hours and the minutes", async () => {
+    await renderCreateScreen();
+
+    await selectPickerOption("1 時間", "時");
+    await selectPickerOption("15 分後", "分");
+
+    expect(wheelTime()).toBe("1 時間 15 分後");
+    expect(screen.getByText("押してから 75 分後に鳴らす")).toBeOnTheScreen();
+  });
+
+  it("keeps the time between 1 and 240 minutes", async () => {
+    await renderCreateScreen();
+
+    await selectPickerOption("0 分後", "分");
+    expect(wheelTime()).toBe("0 時間 1 分後");
+
+    await selectPickerOption("4 時間", "時");
+    expect(wheelTime()).toBe("4 時間 0 分後");
+    await selectPickerOption("30 分後", "分");
+    expect(wheelTime()).toBe("4 時間 0 分後");
+  });
+
+  it("reads the time as minutes before once a target time is chosen", async () => {
     const { user } = await renderCreateScreen();
 
-    await user.press(screen.getByRole("button", { name: "45" }));
+    await user.press(screen.getByRole("radio", { name: "目標時間の" }));
 
-    expect(minutesValue()).toBe("45 分");
+    expect(screen.getByRole("radio", { name: "目標時間の" })).toBeChecked();
+    expect(screen.getByRole("radio", { name: "押してから" })).not.toBeChecked();
+    expect(wheelTime()).toBe("0 時間 30 分前");
+    expect(screen.getByText("目標時間の 30 分前に鳴らす")).toBeOnTheScreen();
     expect(
-      screen.getByRole("radio", { name: /押してから 45 分後に鳴らす/ }),
+      screen.getByText("例: 家を出る 30 分前に知らせる"),
     ).toBeOnTheScreen();
-    expect(
-      screen.getByRole("radio", { name: /目標時間の 45 分前に鳴らす/ }),
-    ).toBeOnTheScreen();
-    expect(
-      screen.getByText("例: 家を出る 45 分前に知らせる"),
-    ).toBeOnTheScreen();
-    expect(screen.getByRole("button", { name: "45" })).toBeSelected();
-  });
-
-  it("steps by 5 from 10 up and by 1 below 10", async () => {
-    const { user } = await renderCreateScreen();
-    const increase = screen.getByRole("button", { name: "増やす" });
-    const decrease = screen.getByRole("button", { name: "減らす" });
-
-    await user.press(increase);
-    expect(minutesValue()).toBe("35 分");
-
-    await user.press(screen.getByRole("button", { name: "10" }));
-    await user.press(decrease);
-    expect(minutesValue()).toBe("9 分");
-
-    await user.press(increase);
-    expect(minutesValue()).toBe("10 分");
-  });
-
-  it("keeps the minutes between 1 and 240", async () => {
-    const { user } = await renderCreateScreen();
-    const decrease = screen.getByRole("button", { name: "減らす" });
-
-    await user.press(screen.getByRole("button", { name: "5" }));
-    for (let i = 0; i < 5; i++) await user.press(decrease);
-
-    expect(minutesValue()).toBe("1 分");
-    expect(decrease).toBeDisabled();
-  });
-
-  it("chooses the target time kind", async () => {
-    const { user } = await renderCreateScreen();
-
-    await user.press(
-      screen.getByRole("radio", { name: /目標時間の 30 分前に鳴らす/ }),
-    );
-
-    expect(
-      screen.getByRole("radio", { name: /目標時間の 30 分前に鳴らす/ }),
-    ).toBeChecked();
-    expect(
-      screen.getByRole("radio", { name: /押してから 30 分後に鳴らす/ }),
-    ).not.toBeChecked();
   });
 
   it("cannot be saved while the name is empty or blank", async () => {

@@ -2,7 +2,11 @@ import { fireEvent, renderRouter, screen } from "expo-router/testing-library";
 
 import { getDb } from "@/shared/db/db";
 
-import { isSheetShown, pressHeaderButtonInTab } from "./native-ui";
+import {
+  isSheetShown,
+  pressHeaderButtonInTab,
+  selectPickerOption,
+} from "./native-ui";
 
 const renderApp = async () => {
   const app = renderRouter("./src/app", { initialUrl: "/" });
@@ -56,10 +60,8 @@ describe("action list", () => {
       screen.getByPlaceholderText("例: 家を出る"),
       "会議の準備",
     );
-    await fireEvent.press(screen.getByRole("button", { name: "15" }));
-    await fireEvent.press(
-      screen.getByRole("radio", { name: /目標時間の 15 分前に鳴らす/ }),
-    );
+    await selectPickerOption("15 分後", "分");
+    await fireEvent.press(screen.getByRole("radio", { name: "目標時間の" }));
     await fireEvent.press(screen.getByRole("button", { name: "保存" }));
 
     expect(
