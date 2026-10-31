@@ -64,6 +64,24 @@ describe("CreateScreen inputs", () => {
     ).toBeOnTheScreen();
   });
 
+  it("turns the wheel to a chip's minutes", async () => {
+    const { user } = await renderCreateScreen();
+
+    await user.press(screen.getByRole("button", { name: "15" }));
+
+    expect(selectedPickerOptionLabel()).toBe("15 分");
+    expect(screen.getByRole("button", { name: "15" })).toBeSelected();
+    expect(screen.getByRole("button", { name: "30" })).not.toBeSelected();
+  });
+
+  it("selects the chip that matches the wheel", async () => {
+    await renderCreateScreen();
+
+    await selectPickerOption("45 分");
+
+    expect(screen.getByRole("button", { name: "45" })).toBeSelected();
+  });
+
   it("chooses the target time kind", async () => {
     const { user } = await renderCreateScreen();
 
