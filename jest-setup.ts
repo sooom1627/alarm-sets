@@ -23,6 +23,8 @@ jest.mock("uniwind", () => ({
 jest.mock("expo-localization", () => ({
   ...jest.requireActual("expo-localization"),
   getLocales: () => [{ languageTag: "ja-JP", languageCode: "ja" }],
+  // Times read as 14:20, as on a device set to the 24-hour clock.
+  getCalendars: () => [{ uses24hourClock: true }],
 }));
 initI18n("ja");
 
