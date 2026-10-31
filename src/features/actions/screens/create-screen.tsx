@@ -105,8 +105,8 @@ export const CreateScreen = () => {
             className="bg-card text-ink border-continuous h-14 rounded-[22px] px-5 text-[17px]"
           />
         </View>
-        <MinutesField minutes={minutes} onChange={setMinutes} />
-        <KindOptions kind={kind} minutes={minutes} onChange={setKind} />
+        <KindOptions kind={kind} onChange={setKind} />
+        <MinutesField minutes={minutes} kind={kind} onChange={setMinutes} />
         {kind === "before" && (
           <RemindField
             isOn={isRemindOn}

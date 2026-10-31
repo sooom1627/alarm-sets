@@ -13,16 +13,19 @@ export const en = {
     hoursLabel: "Hours",
     minutesLabel: "Minutes",
     hoursValue: "{{hours}} hr",
-    minutesValue: "{{minutes}} min",
     whenToRing: "When should it ring?",
     kinds: {
       after: {
         label: "Ring {{minutes}} min after I press",
         example: "e.g. Wake me {{minutes}} min into a nap",
+        choice: "After I press",
+        wheelMinutes: "{{minutes}} min after",
       },
       before: {
         label: "Ring {{minutes}} min before a target time",
         example: "e.g. Remind me {{minutes}} min before leaving home",
+        choice: "Before a target",
+        wheelMinutes: "{{minutes}} min before",
       },
     },
     remind: "Reminder",

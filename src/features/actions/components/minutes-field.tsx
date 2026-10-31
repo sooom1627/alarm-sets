@@ -1,4 +1,4 @@
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 import { Host, HStack, Picker, Text as SwiftText } from "@expo/ui/swift-ui";
 import { clipped, frame, pickerStyle, tag } from "@expo/ui/swift-ui/modifiers";
@@ -6,9 +6,12 @@ import { clipped, frame, pickerStyle, tag } from "@expo/ui/swift-ui/modifiers";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
-import { actionMaxMinutes, actionMinMinutes } from "../schemas/action";
-
-const presets = [5, 10, 15, 20, 30, 45, 60];
+import {
+  actionKindLabelKeys,
+  actionMaxMinutes,
+  actionMinMinutes,
+  type ActionKind,
+} from "../schemas/action";
 
 // Two wheels like the iOS timer: hours 0–4 and minutes 0–59.
 const hourOptions = Array.from(
@@ -28,21 +31,31 @@ const toTotalMinutes = (hours: number, minutes: number) =>
 
 type Props = {
   minutes: number;
+  kind: ActionKind;
   onChange: (minutes: number) => void;
 };
 
-export const MinutesField = ({ minutes, onChange }: Props) => {
+export const MinutesField = ({ minutes, kind, onChange }: Props) => {
   const { t } = useTranslation();
   const hours = Math.floor(minutes / 60);
   const restMinutes = minutes % 60;
+  const keys = actionKindLabelKeys[kind];
 
   return (
     <View className="gap-2">
       <Text className="text-muted font-mono text-xs tracking-wider">
         {t("create.minutes")}
       </Text>
-      {/* The wheel and its shortcut chips form one control, so they share a card. */}
-      <View className="bg-card border-continuous gap-2 rounded-[22px] px-3 pt-1 pb-3">
+      {/* The sentence on top reads the wheels as "○ 分後" or "○ 分前". */}
+      <View className="bg-card border-continuous gap-1 rounded-[22px] px-3 pt-4 pb-2">
+        <View className="gap-0.5 px-2">
+          <Text className="text-ink text-base font-bold">
+            {t(keys.label, { minutes })}
+          </Text>
+          <Text className="text-muted text-sm">
+            {t(keys.example, { minutes })}
+          </Text>
+        </View>
         <Host matchContents={{ vertical: true }}>
           <HStack spacing={0}>
             <Picker
@@ -84,41 +97,12 @@ export const MinutesField = ({ minutes, onChange }: Props) => {
             >
               {minuteOptions.map((option) => (
                 <SwiftText key={option} modifiers={[tag(option)]}>
-                  {t("create.minutesValue", { minutes: option })}
+                  {t(keys.wheelMinutes, { minutes: option })}
                 </SwiftText>
               ))}
             </Picker>
           </HStack>
         </Host>
-        <View className="border-line flex-row justify-between border-t pt-3">
-          {presets.map((preset) => {
-            const isSelected = preset === minutes;
-            return (
-              <Pressable
-                key={preset}
-                role="button"
-                aria-label={String(preset)}
-                aria-selected={isSelected}
-                onPress={() => onChange(preset)}
-                className={
-                  isSelected
-                    ? "bg-sun h-10 min-w-11 items-center justify-center rounded-full px-2"
-                    : "bg-chip h-10 min-w-11 items-center justify-center rounded-full px-2"
-                }
-              >
-                <Text
-                  className={
-                    isSelected
-                      ? "text-on-sun font-mono text-sm"
-                      : "text-ink font-mono text-sm"
-                  }
-                >
-                  {preset}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
       </View>
     </View>
   );
