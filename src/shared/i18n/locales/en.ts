@@ -33,6 +33,21 @@ export const en = {
     remindValue: "{{minutes}} min",
     remindDecrease: "Decrease reminder",
     remindIncrease: "Increase reminder",
+    flow: {
+      title: "How it works",
+      unnamed: "this action",
+      press: "Press “{{name}}” in the list",
+      after: {
+        start: "It starts right away, with no confirmation",
+        rings: "Rings in {{minutes}} min",
+      },
+      before: {
+        enterTarget: "Enter the target time (your last one is filled in)",
+        rings: "Rings {{minutes}} min before the target time",
+        ringsWithReminder:
+          "Rings {{minutes}} min before the target time, with a reminder {{remindMinutes}} min before that",
+      },
+    },
     save: "Save",
   },
   actionList: {
