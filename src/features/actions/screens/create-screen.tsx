@@ -9,6 +9,7 @@ import { useTranslation } from "react-i18next";
 import { KindOptions } from "../components/kind-options";
 import { MinutesField } from "../components/minutes-field";
 import { RemindField } from "../components/remind-field";
+import { UsageFlow } from "../components/usage-flow";
 import { useCreateAction } from "../hooks/use-actions";
 import {
   actionNameMaxLength,
@@ -115,6 +116,12 @@ export const CreateScreen = () => {
             onMinutesChange={setRemindMinutes}
           />
         )}
+        <UsageFlow
+          name={name}
+          minutes={minutes}
+          kind={kind}
+          remindMinutes={hasReminder ? remindMinutes : null}
+        />
       </ScrollView>
       {saveButton}
     </View>
