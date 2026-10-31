@@ -44,13 +44,9 @@ export const newActionSchema = z
 
 export type NewAction = z.infer<typeof newActionSchema>;
 
-// The reminder is not stored yet.
-export const actionSchema = z.object({
-  id: z.number().int(),
-  name: actionFields.name,
-  minutes: actionFields.minutes,
-  kind: actionFields.kind,
-});
+export const actionSchema = z
+  .object({ id: z.number().int(), ...actionFields })
+  .refine(hasReminderOnlyBeforeTarget);
 
 export type Action = z.infer<typeof actionSchema>;
 

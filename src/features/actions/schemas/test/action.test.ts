@@ -98,15 +98,18 @@ describe("newActionSchema reminder", () => {
 
 describe("actionSchema", () => {
   it("adds the stored id", () => {
-    const stored = {
-      name: valid.name,
-      minutes: valid.minutes,
-      kind: valid.kind,
-    };
-    expect(actionSchema.parse({ ...stored, id: 1 })).toEqual({
-      ...stored,
+    expect(actionSchema.parse({ ...valid, id: 1 })).toEqual({
+      ...valid,
       id: 1,
     });
-    expect(actionSchema.safeParse(stored).success).toBe(false);
+    expect(actionSchema.safeParse(valid).success).toBe(false);
+    expect(
+      actionSchema.safeParse({
+        ...valid,
+        id: 1,
+        kind: "after",
+        remindMinutes: 10,
+      }).success,
+    ).toBe(false);
   });
 });

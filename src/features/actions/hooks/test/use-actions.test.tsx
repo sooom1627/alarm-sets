@@ -50,7 +50,13 @@ describe("useActions / useCreateAction", () => {
 
     await waitFor(() =>
       expect(result.current.actions).toEqual([
-        { id: expect.any(Number), name: "昼寝", minutes: 20, kind: "after" },
+        {
+          id: expect.any(Number),
+          name: "昼寝",
+          minutes: 20,
+          kind: "after",
+          remindMinutes: null,
+        },
       ]),
     );
   });
