@@ -34,6 +34,21 @@ export const ja: Translation = {
     remindValue: "{{minutes}} 分前",
     remindDecrease: "リマインドを減らす",
     remindIncrease: "リマインドを増やす",
+    flow: {
+      title: "使うときの流れ",
+      unnamed: "この行動",
+      press: "一覧で「{{name}}」を押す",
+      after: {
+        start: "確認なしで、その場でスタートする",
+        rings: "{{minutes}} 分後に鳴る",
+      },
+      before: {
+        enterTarget: "目標時間を入れる（前回の時間が入っています）",
+        rings: "目標時間の {{minutes}} 分前に鳴る",
+        ringsWithReminder:
+          "目標時間の {{minutes}} 分前に鳴る。その {{remindMinutes}} 分前にリマインド",
+      },
+    },
     save: "保存",
   },
   actionList: {
