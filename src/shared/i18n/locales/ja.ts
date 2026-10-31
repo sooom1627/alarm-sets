@@ -26,6 +26,11 @@ export const ja: Translation = {
         example: "例: 家を出る {{minutes}} 分前に知らせる",
       },
     },
+    remind: "リマインド",
+    remindLead: "鳴る時間の",
+    remindValue: "{{minutes}} 分前",
+    remindDecrease: "リマインドを減らす",
+    remindIncrease: "リマインドを増やす",
     save: "保存",
   },
   actionList: {
