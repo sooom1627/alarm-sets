@@ -34,7 +34,7 @@ export const KindOptions = ({ kind, minutes, onChange }: Props) => {
               aria-label={`${label} ${example}`}
               aria-checked={isChecked}
               onPress={() => onChange(option)}
-              className="bg-card border-continuous flex-row items-center gap-3 rounded-[22px] px-4 py-2.5"
+              className="bg-card border-continuous flex-row items-center gap-3 rounded-[22px] px-4 py-3"
             >
               <View
                 className={

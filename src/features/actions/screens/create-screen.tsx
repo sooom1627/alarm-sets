@@ -80,7 +80,7 @@ export const CreateScreen = () => {
         className="flex-1"
         // Starts the fields below the sheet's native header instead of under it.
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerClassName="gap-4 px-4 pt-2 pb-4"
+        contentContainerClassName="gap-7 px-4 pt-2 pb-6"
         keyboardShouldPersistTaps="handled"
       >
         <View className="gap-2">

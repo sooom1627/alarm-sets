@@ -15,9 +15,8 @@ const minuteOptions = Array.from(
   (_, index) => actionMinMinutes + index,
 );
 
-// About three rows of the wheel, a little over half its default 216pt, so the
-// whole sheet fits a 6.1-inch iPhone without scrolling.
-const wheelHeight = 120;
+// About five rows of the wheel; the default is 216pt.
+const wheelHeight = 160;
 
 const minutesSchema = z
   .number()
@@ -38,7 +37,8 @@ export const MinutesField = ({ minutes, onChange }: Props) => {
       <Text className="text-muted font-mono text-xs tracking-wider">
         {t("create.minutes")}
       </Text>
-      <View className="bg-card border-continuous rounded-[22px]">
+      {/* The wheel and its shortcut chips form one control, so they share a card. */}
+      <View className="bg-card border-continuous gap-2 rounded-[22px] px-3 pt-1 pb-3">
         <Host matchContents={{ vertical: true }}>
           <Picker
             label={t("create.minutes")}
@@ -59,35 +59,35 @@ export const MinutesField = ({ minutes, onChange }: Props) => {
             ))}
           </Picker>
         </Host>
-      </View>
-      <View className="flex-row flex-wrap gap-2">
-        {presets.map((preset) => {
-          const isSelected = preset === minutes;
-          return (
-            <Pressable
-              key={preset}
-              role="button"
-              aria-label={String(preset)}
-              aria-selected={isSelected}
-              onPress={() => onChange(preset)}
-              className={
-                isSelected
-                  ? "bg-sun h-11 min-w-11 items-center justify-center rounded-full px-3"
-                  : "bg-chip h-11 min-w-11 items-center justify-center rounded-full px-3"
-              }
-            >
-              <Text
+        <View className="border-line flex-row justify-between border-t pt-3">
+          {presets.map((preset) => {
+            const isSelected = preset === minutes;
+            return (
+              <Pressable
+                key={preset}
+                role="button"
+                aria-label={String(preset)}
+                aria-selected={isSelected}
+                onPress={() => onChange(preset)}
                 className={
                   isSelected
-                    ? "text-on-sun font-mono text-sm"
-                    : "text-ink font-mono text-sm"
+                    ? "bg-sun h-10 min-w-11 items-center justify-center rounded-full px-2"
+                    : "bg-chip h-10 min-w-11 items-center justify-center rounded-full px-2"
                 }
               >
-                {preset}
-              </Text>
-            </Pressable>
-          );
-        })}
+                <Text
+                  className={
+                    isSelected
+                      ? "text-on-sun font-mono text-sm"
+                      : "text-ink font-mono text-sm"
+                  }
+                >
+                  {preset}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
       </View>
     </View>
   );
