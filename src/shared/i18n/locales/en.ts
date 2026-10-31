@@ -72,6 +72,11 @@ export const en = {
       title: "Couldn't load your actions",
       retry: "Try again",
     },
+    started: {
+      text: "<name>{{name}}</name> rings at <time>{{time}}</time>",
+      spoken: "{{name}}, rings at {{time}}",
+      failed: "Couldn't start",
+    },
   },
   settings: {
     title: "Settings",
