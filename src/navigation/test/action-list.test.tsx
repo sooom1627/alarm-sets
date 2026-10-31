@@ -60,7 +60,7 @@ describe("action list", () => {
       screen.getByPlaceholderText("例: 家を出る"),
       "会議の準備",
     );
-    await selectPickerOption("15 分");
+    await selectPickerOption("15 分", "分");
     await fireEvent.press(
       screen.getByRole("radio", { name: /目標時間の 15 分前に鳴らす/ }),
     );

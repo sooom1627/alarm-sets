@@ -23,6 +23,8 @@ export const CreateScreen = () => {
   const [kind, setKind] = useState<ActionKind>("after");
   const [isRemindOn, setIsRemindOn] = useState(false);
   const [remindMinutes, setRemindMinutes] = useState(10);
+  // Measured, so a larger text size that makes the Save bar taller still works.
+  const [saveBarHeight, setSaveBarHeight] = useState(96);
   const { back } = useRouter();
   const { mutate: createAction, isPending: isCreating } = useCreateAction();
   // A reminder exists only before a target time, and only when switched on.
@@ -43,7 +45,10 @@ export const CreateScreen = () => {
   };
 
   const saveButton = (
-    <View className="bg-screen absolute inset-x-0 bottom-0 px-4 pt-2 pb-8">
+    <View
+      onLayout={(event) => setSaveBarHeight(event.nativeEvent.layout.height)}
+      className="bg-screen absolute inset-x-0 bottom-0 px-4 pt-2 pb-8"
+    >
       <Pressable
         role="button"
         aria-label={t("create.save")}
@@ -71,8 +76,8 @@ export const CreateScreen = () => {
 
   return (
     // Save is laid over the bottom of the sheet and the form scrolls under it.
-    // pb-32 (128pt) on the form is Save's 96pt plus a margin, so the last field
-    // can always scroll clear of Save.
+    // The form ends with Save's measured height plus a margin, so the last
+    // field can always scroll clear of Save.
     // react-native-screens walks down the first child of a form sheet looking
     // for a ScrollView and resets its frame to the whole sheet (RNSScreen.mm),
     // which hid the form before. The empty first View ends that walk.
@@ -82,7 +87,8 @@ export const CreateScreen = () => {
         className="flex-1"
         // Starts the fields below the sheet's native header instead of under it.
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerClassName="gap-7 px-4 pt-2 pb-32"
+        contentContainerClassName="gap-7 px-4 pt-2"
+        contentContainerStyle={{ paddingBottom: saveBarHeight + 32 }}
         keyboardShouldPersistTaps="handled"
       >
         <View className="gap-2">

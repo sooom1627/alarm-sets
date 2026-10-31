@@ -10,6 +10,9 @@ export const en = {
     name: "Name",
     namePlaceholder: "e.g. Leave home",
     minutes: "Time",
+    hoursLabel: "Hours",
+    minutesLabel: "Minutes",
+    hoursValue: "{{hours}} hr",
     minutesValue: "{{minutes}} min",
     whenToRing: "When should it ring?",
     kinds: {

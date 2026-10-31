@@ -22,12 +22,16 @@ const renderCreateScreen = async () => {
   return { user };
 };
 
+// The hours and minutes wheels, read together as "0 時間 30 分".
+const wheelTime = () =>
+  `${selectedPickerOptionLabel("時")} ${selectedPickerOptionLabel("分")}`;
+
 describe("CreateScreen inputs", () => {
   it("shows the name, the minutes and when to ring on one screen", async () => {
     await renderCreateScreen();
 
     expect(screen.getByPlaceholderText("例: 家を出る")).toBeOnTheScreen();
-    expect(selectedPickerOptionLabel()).toBe("30 分");
+    expect(wheelTime()).toBe("0 時間 30 分");
     expect(screen.getByText("いつ鳴らしますか？")).toBeOnTheScreen();
     // Both kinds are offered right away; the kind is not chosen first.
     expect(
@@ -38,21 +42,52 @@ describe("CreateScreen inputs", () => {
     ).not.toBeChecked();
   });
 
-  it("offers every minute from 1 to 240 on the wheel", async () => {
+  it("splits the time into an hours wheel and a minutes wheel", async () => {
     await renderCreateScreen();
 
-    const labels = pickerOptionLabels();
-    expect(labels).toHaveLength(240);
-    expect(labels[0]).toBe("1 分");
-    expect(labels.at(-1)).toBe("240 分");
+    expect(pickerOptionLabels("時")).toEqual([
+      "0 時間",
+      "1 時間",
+      "2 時間",
+      "3 時間",
+      "4 時間",
+    ]);
+    const minuteLabels = pickerOptionLabels("分");
+    expect(minuteLabels).toHaveLength(60);
+    expect(minuteLabels[0]).toBe("0 分");
+    expect(minuteLabels.at(-1)).toBe("59 分");
+  });
+
+  it("adds the hours and the minutes", async () => {
+    await renderCreateScreen();
+
+    await selectPickerOption("1 時間", "時");
+    await selectPickerOption("15 分", "分");
+
+    expect(wheelTime()).toBe("1 時間 15 分");
+    expect(
+      screen.getByRole("radio", { name: /押してから 75 分後に鳴らす/ }),
+    ).toBeOnTheScreen();
+  });
+
+  it("keeps the time between 1 and 240 minutes", async () => {
+    await renderCreateScreen();
+
+    await selectPickerOption("0 分", "分");
+    expect(wheelTime()).toBe("0 時間 1 分");
+
+    await selectPickerOption("4 時間", "時");
+    expect(wheelTime()).toBe("4 時間 0 分");
+    await selectPickerOption("30 分", "分");
+    expect(wheelTime()).toBe("4 時間 0 分");
   });
 
   it("puts the chosen minutes into both choices", async () => {
     await renderCreateScreen();
 
-    await selectPickerOption("45 分");
+    await selectPickerOption("45 分", "分");
 
-    expect(selectedPickerOptionLabel()).toBe("45 分");
+    expect(wheelTime()).toBe("0 時間 45 分");
     expect(
       screen.getByRole("radio", { name: /押してから 45 分後に鳴らす/ }),
     ).toBeOnTheScreen();
@@ -69,7 +104,7 @@ describe("CreateScreen inputs", () => {
 
     await user.press(screen.getByRole("button", { name: "15" }));
 
-    expect(selectedPickerOptionLabel()).toBe("15 分");
+    expect(wheelTime()).toBe("0 時間 15 分");
     expect(screen.getByRole("button", { name: "15" })).toBeSelected();
     expect(screen.getByRole("button", { name: "30" })).not.toBeSelected();
   });
@@ -77,7 +112,7 @@ describe("CreateScreen inputs", () => {
   it("selects the chip that matches the wheel", async () => {
     await renderCreateScreen();
 
-    await selectPickerOption("45 分");
+    await selectPickerOption("45 分", "分");
 
     expect(screen.getByRole("button", { name: "45" })).toBeSelected();
   });

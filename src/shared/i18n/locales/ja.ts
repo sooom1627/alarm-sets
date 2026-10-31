@@ -11,6 +11,9 @@ export const ja: Translation = {
     name: "名前",
     namePlaceholder: "例: 家を出る",
     minutes: "時間",
+    hoursLabel: "時",
+    minutesLabel: "分",
+    hoursValue: "{{hours}} 時間",
     minutesValue: "{{minutes}} 分",
     whenToRing: "いつ鳴らしますか？",
     kinds: {
