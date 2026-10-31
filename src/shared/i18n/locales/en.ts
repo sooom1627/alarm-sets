@@ -73,8 +73,7 @@ export const en = {
       retry: "Try again",
     },
     started: {
-      text: "<name>{{name}}</name> rings at <time>{{time}}</time>",
-      spoken: "{{name}}, rings at {{time}}",
+      title: "{{name}} rings at {{time}}",
       failed: "Couldn't start",
     },
   },

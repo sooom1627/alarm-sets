@@ -5,9 +5,11 @@ import { initI18n } from "@/shared/i18n/i18n";
 jest.mock("react-native-worklets", () =>
   jest.requireActual("react-native-worklets/src/mock"),
 );
-jest.mock("react-native-reanimated", () => {
-  return jest.requireActual("react-native-reanimated/mock");
-});
+jest.mock("react-native-reanimated", () => ({
+  ...jest.requireActual("react-native-reanimated/mock"),
+  // Missing from the mock; sonner-native reads it.
+  useReducedMotion: () => false,
+}));
 
 jest.mock("uniwind", () => ({
   withUniwind: <T>(Component: T) => Component,

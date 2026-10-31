@@ -4,6 +4,8 @@ import * as Haptics from "expo-haptics";
 
 import { QueryClientProvider } from "@tanstack/react-query";
 import { act, fireEvent, render, screen } from "@testing-library/react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Toaster, toast } from "sonner-native";
 
 import { listStarts } from "@/features/starts/db/starts";
 import { getDb } from "@/shared/db/db";
@@ -24,9 +26,12 @@ const pressedAt = new Date(2026, 9, 31, 14, 0);
 // pass, so tests that check the time set the clock right before the press.
 const renderList = async () => {
   await render(
-    <QueryClientProvider client={createQueryClient()}>
-      <ActionListScreen />
-    </QueryClientProvider>,
+    <GestureHandlerRootView>
+      <QueryClientProvider client={createQueryClient()}>
+        <ActionListScreen />
+        <Toaster duration={4000} />
+      </QueryClientProvider>
+    </GestureHandlerRootView>,
   );
 };
 
@@ -43,6 +48,8 @@ beforeEach(() => {
 });
 
 afterEach(async () => {
+  // Toasts live in a module-wide store, so clear them between tests.
+  await act(() => toast.dismiss());
   jest.useRealTimers();
   jest.mocked(Haptics.notificationAsync).mockClear();
   await getDb().execAsync("DELETE FROM actions");
@@ -81,18 +88,17 @@ describe("pressing an action that rings minutes after it is pressed", () => {
       }),
     );
 
-    expect(await screen.findByText("14:20")).toBeOnTheScreen();
-    expect(screen.getByLabelText("昼寝、14:20 に鳴ります")).toBeOnTheScreen();
+    expect(await screen.findByText("昼寝 14:20 に鳴ります")).toBeOnTheScreen();
     expect(Haptics.notificationAsync).toHaveBeenCalledWith(
       Haptics.NotificationFeedbackType.Success,
     );
     expect(AccessibilityInfo.announceForAccessibility).toHaveBeenCalledWith(
-      "昼寝、14:20 に鳴ります",
+      "昼寝 14:20 に鳴ります",
     );
 
-    await act(() => jest.advanceTimersByTime(4000));
+    await act(() => jest.advanceTimersByTime(5000));
 
-    expect(screen.queryByText("14:20")).toBeNull();
+    expect(screen.queryByText("昼寝 14:20 に鳴ります")).toBeNull();
   });
 
   it("starts a second time when pressed again", async () => {

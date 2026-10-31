@@ -74,8 +74,7 @@ export const ja: Translation = {
       retry: "もう一度",
     },
     started: {
-      text: "<name>{{name}}</name> <time>{{time}}</time> に鳴ります",
-      spoken: "{{name}}、{{time}} に鳴ります",
+      title: "{{name}} {{time}} に鳴ります",
       failed: "スタートできませんでした",
     },
   },
