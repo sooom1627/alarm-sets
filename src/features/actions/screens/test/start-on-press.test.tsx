@@ -5,7 +5,7 @@ import * as Haptics from "expo-haptics";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { act, fireEvent, render, screen } from "@testing-library/react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Toaster, toast } from "sonner-native";
+import { toast, Toaster } from "sonner-native";
 
 import { listStarts } from "@/features/starts/db/starts";
 import { getDb } from "@/shared/db/db";
