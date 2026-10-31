@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 
 import { KindOptions } from "../components/kind-options";
 import { MinutesField } from "../components/minutes-field";
+import { RemindField } from "../components/remind-field";
 import { useCreateAction } from "../hooks/use-actions";
 import {
   actionNameMaxLength,
@@ -20,15 +21,26 @@ export const CreateScreen = () => {
   const [name, setName] = useState("");
   const [minutes, setMinutes] = useState(30);
   const [kind, setKind] = useState<ActionKind>("after");
+  const [isRemindOn, setIsRemindOn] = useState(false);
+  const [remindMinutes, setRemindMinutes] = useState(10);
   const { back } = useRouter();
   const { mutate: createAction, isPending: isCreating } = useCreateAction();
   const canSave = name.trim().length > 0 && !isCreating;
 
+  // A reminder exists only before a target time, and only when switched on.
+  const hasReminder = kind === "before" && isRemindOn;
+
   // On failure the sheet stays open with what was entered.
   const save = () =>
-    createAction(newActionSchema.parse({ name, minutes, kind }), {
-      onSuccess: () => back(),
-    });
+    createAction(
+      newActionSchema.parse({
+        name,
+        minutes,
+        kind,
+        remindMinutes: hasReminder ? remindMinutes : null,
+      }),
+      { onSuccess: () => back() },
+    );
 
   return (
     <View className="bg-screen flex-1">
@@ -53,6 +65,14 @@ export const CreateScreen = () => {
         </View>
         <MinutesField minutes={minutes} onChange={setMinutes} />
         <KindOptions kind={kind} minutes={minutes} onChange={setKind} />
+        {kind === "before" && (
+          <RemindField
+            isOn={isRemindOn}
+            minutes={remindMinutes}
+            onIsOnChange={setIsRemindOn}
+            onMinutesChange={setRemindMinutes}
+          />
+        )}
       </ScrollView>
       <View className="px-4 pt-2 pb-8">
         <Pressable
