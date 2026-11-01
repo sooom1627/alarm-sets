@@ -194,6 +194,8 @@ describe("starting from the target time sheet", () => {
         startedAt: new Date(2026, 9, 31, 6, 0).getTime(),
         ringsAt: new Date(2026, 9, 31, 7, 30).getTime(),
         remindsAt: new Date(2026, 9, 31, 7, 20).getTime(),
+        alarmId: null,
+        remindAlarmId: null,
       },
     ]);
     expect(await getLastTarget(id)).toEqual({ hour: 8, minute: 0 });

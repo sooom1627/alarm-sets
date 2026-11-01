@@ -17,7 +17,8 @@ export function useStarts() {
 export function useStartAction() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: insertStart,
+    mutationFn: (start: NewStart) =>
+      insertStart(start, { alarmId: null, remindAlarmId: null }),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: startsQueryKey }),
   });
@@ -34,7 +35,10 @@ export function useStartAtTarget() {
       start: NewStart;
       target: TimeOfDay;
     }) => {
-      const saved = await insertStart(start);
+      const saved = await insertStart(start, {
+        alarmId: null,
+        remindAlarmId: null,
+      });
       await saveLastTarget(start.actionId, target);
       return saved;
     },

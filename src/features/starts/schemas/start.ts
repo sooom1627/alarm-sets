@@ -27,8 +27,16 @@ export const newStartSchema = z.object(startFields).refine(isInOrder);
 
 export type NewStart = z.infer<typeof newStartSchema>;
 
+// The AlarmKit alarms a start scheduled. Starts saved before S-007 have none.
+export const startAlarmsSchema = z.object({
+  alarmId: z.string().nullable(),
+  remindAlarmId: z.string().nullable(),
+});
+
+export type StartAlarms = z.infer<typeof startAlarmsSchema>;
+
 export const startSchema = z
-  .object({ id: z.number().int(), ...startFields })
+  .object({ id: z.number().int(), ...startFields, ...startAlarmsSchema.shape })
   .refine(isInOrder);
 
 export type Start = z.infer<typeof startSchema>;
