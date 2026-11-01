@@ -8,9 +8,11 @@
     "scheme": "alarmsets",
     "userInterfaceStyle": "automatic",
     "ios": {
+      "bundleIdentifier": "com.sooom1627.alarmsets",
       "icon": "./assets/expo.icon",
       "infoPlist": {
-        "CFBundleLocalizations": ["en", "ja"]
+        "CFBundleLocalizations": ["en", "ja"],
+        "NSAlarmKitUsageDescription": "Rings an alarm at the time for the actions you start."
       }
     },
     "android": {
@@ -52,11 +54,16 @@
             "./assets/fonts/GeistMono-Light.ttf"
           ]
         }
-      ]
+      ],
+      "react-native-ios-alarmkit"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "locales": {
+      "en": "./assets/locales/en.json",
+      "ja": "./assets/locales/ja.json"
     },
     "extra": {
       "router": {},

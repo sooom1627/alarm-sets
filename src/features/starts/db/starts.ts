@@ -2,12 +2,23 @@ import { z } from "zod";
 
 import { getDb } from "@/shared/db/db";
 
-import { startSchema, type NewStart, type Start } from "../schemas/start";
+import {
+  startSchema,
+  type NewStart,
+  type Start,
+  type StartAlarms,
+} from "../schemas/start";
 
 let isTableReady = false;
 
 // PRAGMA user_version belongs to the actions table, so this table upgrades
-// by the columns it has: reminds_at came with S-006.
+// by the columns it has: reminds_at came with S-006, the alarm ids with S-007.
+const addedColumns = [
+  ["reminds_at", "INTEGER"],
+  ["alarm_id", "TEXT"],
+  ["remind_alarm_id", "TEXT"],
+] as const;
+
 const getStartsDb = async () => {
   const db = getDb();
   if (isTableReady) return db;
@@ -22,8 +33,9 @@ const getStartsDb = async () => {
   const columns = z
     .array(z.object({ name: z.string() }))
     .parse(await db.getAllAsync("PRAGMA table_info(starts)"));
-  if (!columns.some(({ name }) => name === "reminds_at")) {
-    await db.execAsync("ALTER TABLE starts ADD COLUMN reminds_at INTEGER;");
+  for (const [column, type] of addedColumns) {
+    if (columns.some(({ name }) => name === column)) continue;
+    await db.execAsync(`ALTER TABLE starts ADD COLUMN ${column} ${type};`);
   }
   isTableReady = true;
   return db;
@@ -33,19 +45,24 @@ const getStartsDb = async () => {
 export const listStarts = async (): Promise<Start[]> => {
   const db = await getStartsDb();
   const rows = await db.getAllAsync(
-    "SELECT id, action_id AS actionId, started_at AS startedAt, rings_at AS ringsAt, reminds_at AS remindsAt FROM starts ORDER BY rings_at, id",
+    "SELECT id, action_id AS actionId, started_at AS startedAt, rings_at AS ringsAt, reminds_at AS remindsAt, alarm_id AS alarmId, remind_alarm_id AS remindAlarmId FROM starts ORDER BY rings_at, id",
   );
   return z.array(startSchema).parse(rows);
 };
 
-export const insertStart = async (start: NewStart): Promise<Start> => {
+export const insertStart = async (
+  start: NewStart,
+  alarms: StartAlarms,
+): Promise<Start> => {
   const db = await getStartsDb();
   const { lastInsertRowId } = await db.runAsync(
-    "INSERT INTO starts (action_id, started_at, rings_at, reminds_at) VALUES (?, ?, ?, ?)",
+    "INSERT INTO starts (action_id, started_at, rings_at, reminds_at, alarm_id, remind_alarm_id) VALUES (?, ?, ?, ?, ?, ?)",
     start.actionId,
     start.startedAt,
     start.ringsAt,
     start.remindsAt,
+    alarms.alarmId,
+    alarms.remindAlarmId,
   );
-  return { id: lastInsertRowId, ...start };
+  return { id: lastInsertRowId, ...start, ...alarms };
 };

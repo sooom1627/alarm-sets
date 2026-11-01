@@ -51,6 +51,14 @@ export const ja: Translation = {
     },
     save: "保存",
   },
+  alarm: {
+    deniedTitle: "アラームが許可されていません",
+    deniedMessage: "設定アプリでアラームを許可すると、スタートできます。",
+    cancel: "キャンセル",
+    openSettings: "設定を開く",
+    stop: "停止",
+    reminder: "{{name}} まであと {{minutes}} 分",
+  },
   actionList: {
     kinds: {
       after: {

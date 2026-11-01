@@ -12,6 +12,10 @@ import { Link, useRouter } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner-native";
 
+import {
+  alertAlarmDenied,
+  isAlarmDenied,
+} from "@/features/starts/alarms/start-alarms";
 import { useStartAction } from "@/features/starts/hooks/use-starts";
 import { startAfterPress } from "@/features/starts/schemas/start";
 import { formatClockTime } from "@/shared/utils/clock-time";
@@ -41,23 +45,30 @@ export const ActionListScreen = () => {
   // No confirmation: the press itself starts it (product.md 1.4).
   const start = (action: Action) => {
     const newStart = startAfterPress(action, new Date());
-    startAction(newStart, {
-      onSuccess: () => {
-        const started = t("actionList.started.title", {
-          name: action.name,
-          time: formatClockTime(newStart.ringsAt, i18n.language),
-        });
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        toast.success(started);
-        AccessibilityInfo.announceForAccessibility(started);
+    startAction(
+      { start: newStart, name: action.name },
+      {
+        onSuccess: () => {
+          const started = t("actionList.started.title", {
+            name: action.name,
+            time: formatClockTime(newStart.ringsAt, i18n.language),
+          });
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+          toast.success(started);
+          AccessibilityInfo.announceForAccessibility(started);
+        },
+        onError: (error) => {
+          if (isAlarmDenied(error)) {
+            alertAlarmDenied();
+            return;
+          }
+          toast.error(t("actionList.started.failed"));
+          AccessibilityInfo.announceForAccessibility(
+            t("actionList.started.failed"),
+          );
+        },
       },
-      onError: () => {
-        toast.error(t("actionList.started.failed"));
-        AccessibilityInfo.announceForAccessibility(
-          t("actionList.started.failed"),
-        );
-      },
-    });
+    );
   };
 
   return (

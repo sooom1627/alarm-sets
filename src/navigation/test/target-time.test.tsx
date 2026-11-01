@@ -1,3 +1,5 @@
+import { Alert } from "react-native";
+
 import { router } from "expo-router";
 import {
   act,
@@ -6,6 +8,8 @@ import {
   screen,
   waitFor,
 } from "expo-router/testing-library";
+
+import { AlarmKitManager } from "react-native-ios-alarmkit";
 
 import { insertAction } from "@/features/actions/db/actions";
 import {
@@ -38,12 +42,18 @@ const addLeaveHome = (remindMinutes: number | null) =>
     remindMinutes,
   });
 
+const scheduledAlarms = () => AlarmKitManager.shared.getAlarms();
+
 beforeEach(() => {
   jest.useFakeTimers({ now: new Date(2026, 9, 31, 6, 0) });
 });
 
 afterEach(async () => {
   jest.useRealTimers();
+  jest.restoreAllMocks();
+  for (const { id } of await scheduledAlarms()) {
+    await AlarmKitManager.shared.cancel(id);
+  }
   await getDb().execAsync("DELETE FROM actions");
   await listStarts(); // creates the table when no test started anything
   await getDb().execAsync("DELETE FROM starts");
@@ -176,6 +186,34 @@ const openFromList = async () => {
 };
 
 describe("starting from the target time sheet", () => {
+  it("stays open and offers the Settings app when alarms are not allowed", async () => {
+    jest
+      .spyOn(AlarmKitManager.shared, "requestAuthorization")
+      .mockResolvedValue(false);
+    jest.spyOn(Alert, "alert").mockImplementation(() => undefined);
+    await addLeaveHome(10);
+    await openFromList();
+    await pickTimeOfDay(8, 0);
+
+    await fireEvent.press(
+      screen.getByRole("button", { name: "7:30 に鳴らしてスタート" }),
+    );
+
+    await waitFor(() =>
+      expect(Alert.alert).toHaveBeenCalledWith(
+        "アラームが許可されていません",
+        "設定アプリでアラームを許可すると、スタートできます。",
+        [
+          expect.objectContaining({ text: "キャンセル" }),
+          expect.objectContaining({ text: "設定を開く" }),
+        ],
+      ),
+    );
+    expect(isSheetShown("target-time")).toBe(true);
+    expect(await listStarts()).toEqual([]);
+    expect(await scheduledAlarms()).toEqual([]);
+  });
+
   it("starts with the alarm and reminder times and closes", async () => {
     const { id } = await addLeaveHome(10);
     await openFromList();
@@ -187,13 +225,28 @@ describe("starting from the target time sheet", () => {
       screen.getByRole("button", { name: "7:30 に鳴らしてスタート" }),
     );
 
+    const ringsAt = new Date(2026, 9, 31, 7, 30).getTime();
+    const remindsAt = new Date(2026, 9, 31, 7, 20).getTime();
+    const alarms = await scheduledAlarms();
+    const ringingAt = (date: number) =>
+      alarms.find(
+        ({ schedule }) => schedule?.type === "fixed" && schedule.date === date,
+      );
+    const alarm = ringingAt(ringsAt);
+    const reminder = ringingAt(remindsAt);
+    expect(alarm).toEqual(expect.objectContaining({ title: "家を出る" }));
+    expect(reminder).toEqual(
+      expect.objectContaining({ title: "家を出る まであと 10 分" }),
+    );
     expect(await listStarts()).toEqual([
       {
         id: expect.any(Number),
         actionId: id,
         startedAt: new Date(2026, 9, 31, 6, 0).getTime(),
-        ringsAt: new Date(2026, 9, 31, 7, 30).getTime(),
-        remindsAt: new Date(2026, 9, 31, 7, 20).getTime(),
+        ringsAt,
+        remindsAt,
+        alarmId: alarm?.id,
+        remindAlarmId: reminder?.id,
       },
     ]);
     expect(await getLastTarget(id)).toEqual({ hour: 8, minute: 0 });
