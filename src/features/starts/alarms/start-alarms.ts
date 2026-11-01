@@ -1,3 +1,5 @@
+import { Alert, Linking } from "react-native";
+
 import { randomUUID } from "expo-crypto";
 
 import i18n from "i18next";
@@ -13,6 +15,18 @@ const alarmDeniedMessage = "Alarms are not allowed";
 // The permission was refused, so nothing could be scheduled.
 export const isAlarmDenied = (error: unknown) =>
   error instanceof Error && error.message === alarmDeniedMessage;
+
+// A sheet covers the toasts, so the refusal is a native alert, from which
+// the Settings app is one tap away.
+export const alertAlarmDenied = () => {
+  Alert.alert(i18n.t("alarm.deniedTitle"), i18n.t("alarm.deniedMessage"), [
+    { text: i18n.t("alarm.cancel"), style: "cancel" },
+    {
+      text: i18n.t("alarm.openSettings"),
+      onPress: () => void Linking.openSettings(),
+    },
+  ]);
+};
 
 // One AlarmKit alarm on a fixed date. iOS draws the alert, so its colors are
 // plain values: the theme tokens do not reach it. Stop is the only button.

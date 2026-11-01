@@ -51,6 +51,10 @@ export const en = {
     save: "Save",
   },
   alarm: {
+    deniedTitle: "Alarms are not allowed",
+    deniedMessage: "Allow alarms in Settings to start.",
+    cancel: "Cancel",
+    openSettings: "Open Settings",
     stop: "Stop",
     reminder: "{{minutes}} min until {{name}}",
   },
