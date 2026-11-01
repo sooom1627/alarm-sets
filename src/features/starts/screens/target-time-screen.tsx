@@ -11,7 +11,7 @@ import {
 import * as Haptics from "expo-haptics";
 import { Stack, useRouter } from "expo-router";
 import { DatePicker, Host } from "@expo/ui/swift-ui";
-import { datePickerStyle } from "@expo/ui/swift-ui/modifiers";
+import { datePickerStyle, labelsHidden } from "@expo/ui/swift-ui/modifiers";
 
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner-native";
@@ -156,7 +156,8 @@ const TargetTimeForm = ({ action, initialTarget }: FormProps) => {
               onDateChange={(date) =>
                 setTarget({ hour: date.getHours(), minute: date.getMinutes() })
               }
-              modifiers={[datePickerStyle("wheel")]}
+              // The title stays for VoiceOver; shown, it pushes the wheel off the card.
+              modifiers={[datePickerStyle("wheel"), labelsHidden()]}
             />
           </Host>
         </View>
