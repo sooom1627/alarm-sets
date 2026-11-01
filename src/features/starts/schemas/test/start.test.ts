@@ -28,6 +28,8 @@ describe("startSchema", () => {
     startedAt: 1000,
     ringsAt: 61000,
     remindsAt: null,
+    alarmId: "alarm-uuid",
+    remindAlarmId: null,
   };
 
   it("accepts an action, when it started and when it rings", () => {

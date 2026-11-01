@@ -45,3 +45,8 @@ jest.mock("expo-sqlite/kv-store", () => {
     },
   };
 });
+
+// expo-crypto makes ids natively; Node's crypto makes the same kind of UUID.
+jest.mock("expo-crypto", () => ({
+  randomUUID: () => require("node:crypto").randomUUID(),
+}));

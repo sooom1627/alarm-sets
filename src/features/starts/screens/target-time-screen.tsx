@@ -20,6 +20,7 @@ import { useActions } from "@/features/actions/hooks/use-actions";
 import type { Action } from "@/features/actions/schemas/action";
 import { formatClockTime } from "@/shared/utils/clock-time";
 
+import { alertAlarmDenied, isAlarmDenied } from "../alarms/start-alarms";
 import { RingTimeRow } from "../components/ring-time-row";
 import { useLastTarget } from "../hooks/use-last-target";
 import { useStartAtTarget } from "../hooks/use-starts";
@@ -102,6 +103,7 @@ const TargetTimeForm = ({ action, initialTarget }: FormProps) => {
           ringsAt,
           remindsAt: isReminderPast ? null : remindsAt,
         },
+        name,
         target,
       },
       {
@@ -115,7 +117,11 @@ const TargetTimeForm = ({ action, initialTarget }: FormProps) => {
           AccessibilityInfo.announceForAccessibility(started);
           back();
         },
-        onError: () => {
+        onError: (error) => {
+          if (isAlarmDenied(error)) {
+            alertAlarmDenied();
+            return;
+          }
           toast.error(t("actionList.started.failed"));
           AccessibilityInfo.announceForAccessibility(
             t("actionList.started.failed"),
