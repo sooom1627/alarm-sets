@@ -8,7 +8,10 @@
     "scheme": "alarmsets",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "infoPlist": {
+        "NSAlarmKitUsageDescription": "Rings an alarm at the time for the actions you start."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -49,11 +52,16 @@
             "./assets/fonts/GeistMono-Light.ttf"
           ]
         }
-      ]
+      ],
+      "react-native-ios-alarmkit"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "locales": {
+      "en": "./assets/locales/en.json",
+      "ja": "./assets/locales/ja.json"
     }
   }
 }
