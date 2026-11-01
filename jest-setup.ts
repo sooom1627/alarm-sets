@@ -5,11 +5,14 @@ import { initI18n } from "@/shared/i18n/i18n";
 jest.mock("react-native-worklets", () =>
   jest.requireActual("react-native-worklets/src/mock"),
 );
-jest.mock("react-native-reanimated", () => ({
-  ...jest.requireActual("react-native-reanimated/mock"),
-  // Missing from the mock; sonner-native reads it.
-  useReducedMotion: () => false,
-}));
+// The mock lacks useReducedMotion, which sonner-native reads. Patch the mock
+// module itself: expo-router/testing-library mocks reanimated again with it.
+jest.mock("react-native-reanimated", () => {
+  const reanimatedMock = require("react-native-reanimated/mock");
+  reanimatedMock.useReducedMotion = () => false;
+  return reanimatedMock;
+});
+require("react-native-reanimated/mock").useReducedMotion = () => false;
 
 jest.mock("uniwind", () => ({
   withUniwind: <T>(Component: T) => Component,

@@ -127,6 +127,17 @@ export const selectedPickerOptionLabel = (pickerLabel?: string) => {
   )?.label;
 };
 
+// SwiftUI Text views that are not picker options, such as the units fixed
+// beside a wheel.
+export const nativeTexts = () =>
+  screen.container
+    .queryAll(
+      (node) =>
+        typeof node.props.text === "string" &&
+        !modifiersOf(node).some((m) => m.$type === "tag"),
+    )
+    .map((node) => node.props.text as string);
+
 export const selectPickerOption = async (
   label: string,
   pickerLabel?: string,
@@ -158,6 +169,35 @@ export const flipToggle = async () => {
   await act(async () => {
     fireEvent(toggle, "isOnChange", {
       nativeEvent: { isOn: toggle.props.isOn !== true },
+    });
+  });
+};
+
+// A SwiftUI DatePicker (@expo/ui) holds its date as an ISO string and reports
+// a turn of its wheels with a `dateChange` event.
+const findDatePicker = () => {
+  const [picker] = screen.container.queryAll(
+    (node) =>
+      typeof node.props.onDateChange === "function" &&
+      "displayedComponents" in node.props,
+  );
+  if (!picker) throw new Error("No date picker");
+  return picker;
+};
+
+// The picked time of day, as "8:00".
+export const selectedTimeOfDay = () => {
+  const date = new Date(findDatePicker().props.selection as string);
+  return `${date.getHours()}:${String(date.getMinutes()).padStart(2, "0")}`;
+};
+
+export const pickTimeOfDay = async (hour: number, minute: number) => {
+  const picker = findDatePicker();
+  const date = new Date(picker.props.selection as string);
+  date.setHours(hour, minute, 0, 0);
+  await act(async () => {
+    fireEvent(picker, "dateChange", {
+      nativeEvent: { date: date.toISOString() },
     });
   });
 };

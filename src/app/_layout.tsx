@@ -34,6 +34,10 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
+            name="target-time"
+            options={{ presentation: "formSheet", sheetGrabberVisible: true }}
+          />
+          <Stack.Screen
             name="settings"
             options={{
               presentation: "formSheet",

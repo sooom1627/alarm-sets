@@ -74,6 +74,7 @@ describe("pressing an action that rings minutes after it is pressed", () => {
         actionId: nap.id,
         startedAt: pressedAt.getTime(),
         ringsAt: new Date(2026, 9, 31, 14, 20).getTime(),
+        remindsAt: null,
       },
     ]);
   });
@@ -139,23 +140,5 @@ describe("pressing an action that rings minutes after it is pressed", () => {
     } finally {
       await getDb().execAsync("ALTER TABLE starts_away RENAME TO starts");
     }
-  });
-});
-
-describe("pressing an action that rings minutes before a target time", () => {
-  it("does not start yet", async () => {
-    await insertAction({
-      name: "家を出る",
-      minutes: 30,
-      kind: "before",
-      remindMinutes: null,
-    });
-    await renderList();
-
-    const tile =
-      await screen.findByLabelText("家を出る、目標時間の30分前に鳴る");
-
-    expect(tile).not.toHaveProp("role", "button");
-    expect(screen.queryByRole("button", { name: /家を出る/ })).toBeNull();
   });
 });

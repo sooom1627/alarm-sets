@@ -2,6 +2,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { render, screen, userEvent } from "@testing-library/react-native";
 
 import {
+  nativeTexts,
   pickerOptionLabels,
   selectedPickerOptionLabel,
   selectPickerOption,
@@ -22,9 +23,12 @@ const renderCreateScreen = async () => {
   return { user };
 };
 
-// The hours and minutes wheels, read together as "0 時間 30 分".
-const wheelTime = () =>
-  `${selectedPickerOptionLabel("時")} ${selectedPickerOptionLabel("分")}`;
+// The hours and minutes wheels with the units beside them, read together as
+// "0 時間 30 分後".
+const wheelTime = () => {
+  const [hoursUnit, minutesUnit] = nativeTexts();
+  return `${selectedPickerOptionLabel("時")} ${hoursUnit} ${selectedPickerOptionLabel("分")} ${minutesUnit}`;
+};
 
 describe("CreateScreen inputs", () => {
   it("shows the name, when to ring and the time on one screen", async () => {
@@ -43,24 +47,20 @@ describe("CreateScreen inputs", () => {
   it("splits the time into an hours wheel and a minutes wheel", async () => {
     await renderCreateScreen();
 
-    expect(pickerOptionLabels("時")).toEqual([
-      "0 時間",
-      "1 時間",
-      "2 時間",
-      "3 時間",
-      "4 時間",
-    ]);
+    expect(pickerOptionLabels("時")).toEqual(["0", "1", "2", "3", "4"]);
     const minuteLabels = pickerOptionLabels("分");
     expect(minuteLabels).toHaveLength(60);
-    expect(minuteLabels[0]).toBe("0 分後");
-    expect(minuteLabels.at(-1)).toBe("59 分後");
+    expect(minuteLabels[0]).toBe("0");
+    expect(minuteLabels.at(-1)).toBe("59");
+    // The rows are numbers only; the units sit fixed beside the wheels.
+    expect(nativeTexts()).toEqual(["時間", "分後"]);
   });
 
   it("adds the hours and the minutes", async () => {
     await renderCreateScreen();
 
-    await selectPickerOption("1 時間", "時");
-    await selectPickerOption("15 分後", "分");
+    await selectPickerOption("1", "時");
+    await selectPickerOption("15", "分");
 
     expect(wheelTime()).toBe("1 時間 15 分後");
     expect(screen.getByText("押してから 75 分後に鳴らす")).toBeOnTheScreen();
@@ -69,12 +69,12 @@ describe("CreateScreen inputs", () => {
   it("keeps the time between 1 and 240 minutes", async () => {
     await renderCreateScreen();
 
-    await selectPickerOption("0 分後", "分");
+    await selectPickerOption("0", "分");
     expect(wheelTime()).toBe("0 時間 1 分後");
 
-    await selectPickerOption("4 時間", "時");
+    await selectPickerOption("4", "時");
     expect(wheelTime()).toBe("4 時間 0 分後");
-    await selectPickerOption("30 分後", "分");
+    await selectPickerOption("30", "分");
     expect(wheelTime()).toBe("4 時間 0 分後");
   });
 

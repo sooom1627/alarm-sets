@@ -8,8 +8,6 @@ import { actionKindLabelKeys, type Action } from "../schemas/action";
 
 type Props = {
   action: Action;
-  // Only "some minutes after it is pressed" starts on a press so far; target
-  // time actions get their screen in S-006.
   onPress?: () => void;
 };
 
