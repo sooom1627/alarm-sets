@@ -51,6 +51,10 @@ export const ja: Translation = {
     },
     save: "保存",
   },
+  alarm: {
+    stop: "停止",
+    reminder: "{{name}} まであと {{minutes}} 分",
+  },
   actionList: {
     kinds: {
       after: {

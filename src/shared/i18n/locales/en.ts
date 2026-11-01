@@ -50,6 +50,10 @@ export const en = {
     },
     save: "Save",
   },
+  alarm: {
+    stop: "Stop",
+    reminder: "{{minutes}} min until {{name}}",
+  },
   actionList: {
     kinds: {
       after: {
