@@ -43,7 +43,7 @@ describe("CreateScreen usage flow", () => {
     const { user } = await renderCreateScreen();
 
     await user.type(screen.getByPlaceholderText("例: 家を出る"), " 昼寝 ");
-    await selectPickerOption("20 分後", "分");
+    await selectPickerOption("20", "分");
 
     expect(flowSteps()).toEqual([
       "一覧で「昼寝」を押す",

@@ -127,6 +127,17 @@ export const selectedPickerOptionLabel = (pickerLabel?: string) => {
   )?.label;
 };
 
+// SwiftUI Text views that are not picker options, such as the units fixed
+// beside a wheel.
+export const nativeTexts = () =>
+  screen.container
+    .queryAll(
+      (node) =>
+        typeof node.props.text === "string" &&
+        !modifiersOf(node).some((m) => m.$type === "tag"),
+    )
+    .map((node) => node.props.text as string);
+
 export const selectPickerOption = async (
   label: string,
   pickerLabel?: string,
