@@ -11,6 +11,7 @@
       "bundleIdentifier": "com.sooom1627.alarmsets",
       "icon": "./assets/expo.icon",
       "infoPlist": {
+        "CFBundleLocalizations": ["en", "ja"],
         "NSAlarmKitUsageDescription": "Rings an alarm at the time for the actions you start."
       }
     },
@@ -63,6 +64,13 @@
     "locales": {
       "en": "./assets/locales/en.json",
       "ja": "./assets/locales/ja.json"
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "808849d6-24a9-4aec-83c7-4a19c08816b7"
+      }
+    },
+    "owner": "sooom"
   }
 }
