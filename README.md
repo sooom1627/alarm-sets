@@ -21,6 +21,8 @@ pnpm install
 pnpm start
 ```
 
+アラーム（AlarmKit）はネイティブモジュールなので、Expo Go では動きません。`npx expo run:ios`（Xcode が要る）か EAS Build で開発ビルドを作って入れてから、`pnpm start` で開きます。ネイティブの依存や `app.json` のプラグインを変えたときは、開発ビルドを作り直します。
+
 ルートは [`src/app`](src/app)（Expo Router）です。
 
 ## Quality
