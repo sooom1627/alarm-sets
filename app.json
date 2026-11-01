@@ -10,10 +10,7 @@
     "ios": {
       "icon": "./assets/expo.icon",
       "infoPlist": {
-        "CFBundleLocalizations": [
-          "en",
-          "ja"
-        ]
+        "CFBundleLocalizations": ["en", "ja"]
       }
     },
     "android": {
@@ -43,10 +40,7 @@
         "expo-localization",
         {
           "supportedLocales": {
-            "ios": [
-              "en",
-              "ja"
-            ]
+            "ios": ["en", "ja"]
           }
         }
       ],
