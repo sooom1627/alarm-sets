@@ -8,7 +8,13 @@
     "scheme": "alarmsets",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "infoPlist": {
+        "CFBundleLocalizations": [
+          "en",
+          "ja"
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -37,7 +43,10 @@
         "expo-localization",
         {
           "supportedLocales": {
-            "ios": ["en", "ja"]
+            "ios": [
+              "en",
+              "ja"
+            ]
           }
         }
       ],
@@ -54,6 +63,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "808849d6-24a9-4aec-83c7-4a19c08816b7"
+      }
+    },
+    "owner": "sooom"
   }
 }
