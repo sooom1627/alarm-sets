@@ -8,8 +8,7 @@ import {
 } from "./native-ui";
 
 const renderApp = async () => {
-  const app = renderRouter("./src/app", { initialUrl: "/" });
-  await app;
+  const app = await renderRouter("./src/app", { initialUrl: "/" });
   return { app };
 };
 

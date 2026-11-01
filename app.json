@@ -55,7 +55,8 @@
           ]
         }
       ],
-      "react-native-ios-alarmkit"
+      "react-native-ios-alarmkit",
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true,
