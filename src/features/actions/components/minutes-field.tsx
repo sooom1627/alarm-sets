@@ -13,7 +13,8 @@ import {
   type ActionKind,
 } from "../schemas/action";
 
-// Two wheels like the iOS timer: hours 0–4 and minutes 0–59.
+// Two wheels like the iOS timer: hours 0–4 and minutes 0–59. The rows are
+// numbers only; the units sit fixed beside each wheel.
 const hourOptions = Array.from(
   { length: Math.floor(actionMaxMinutes / 60) + 1 },
   (_, index) => index,
@@ -77,10 +78,11 @@ export const MinutesField = ({ minutes, kind, onChange }: Props) => {
             >
               {hourOptions.map((option) => (
                 <SwiftText key={option} modifiers={[tag(option)]}>
-                  {t("create.hoursValue", { hours: option })}
+                  {String(option)}
                 </SwiftText>
               ))}
             </Picker>
+            <SwiftText>{t("create.hoursUnit")}</SwiftText>
             <Picker
               label={t("create.minutesLabel")}
               selection={restMinutes}
@@ -97,10 +99,11 @@ export const MinutesField = ({ minutes, kind, onChange }: Props) => {
             >
               {minuteOptions.map((option) => (
                 <SwiftText key={option} modifiers={[tag(option)]}>
-                  {t(keys.wheelMinutes, { minutes: option })}
+                  {String(option)}
                 </SwiftText>
               ))}
             </Picker>
+            <SwiftText>{t(keys.minutesUnit)}</SwiftText>
           </HStack>
         </Host>
       </View>

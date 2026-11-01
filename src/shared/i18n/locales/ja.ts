@@ -13,20 +13,20 @@ export const ja: Translation = {
     minutes: "時間",
     hoursLabel: "時",
     minutesLabel: "分",
-    hoursValue: "{{hours}} 時間",
+    hoursUnit: "時間",
     whenToRing: "いつ鳴らしますか？",
     kinds: {
       after: {
         label: "押してから {{minutes}} 分後に鳴らす",
         example: "例: 昼寝して {{minutes}} 分後に起こす",
         choice: "押してから",
-        wheelMinutes: "{{minutes}} 分後",
+        minutesUnit: "分後",
       },
       before: {
         label: "目標時間の {{minutes}} 分前に鳴らす",
         example: "例: 家を出る {{minutes}} 分前に知らせる",
         choice: "目標時間の",
-        wheelMinutes: "{{minutes}} 分前",
+        minutesUnit: "分前",
       },
     },
     remind: "リマインド",
