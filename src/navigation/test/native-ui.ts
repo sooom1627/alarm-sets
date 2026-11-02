@@ -68,12 +68,13 @@ export const pressHeaderButtonInTab = async (
   throw new Error(`No header button labelled "${buttonLabel}"`);
 };
 
+// Screen ids are the route key, `<route name>:<position>` (e.g. `settings:0-1`).
 const findSheet = (routeName: string) => {
   const [sheet] = screen.container.queryAll(
     (node) =>
       node.type === "RNSModalScreen" &&
       node.props.stackPresentation === "formSheet" &&
-      String(node.props.screenId).startsWith(`${routeName}-`),
+      String(node.props.screenId).startsWith(`${routeName}:`),
   );
   return sheet;
 };

@@ -9,6 +9,7 @@ module.exports = {
     ? ["default", "github-actions"]
     : ["default"],
   setupFilesAfterEnv: ["./jest-setup.ts"],
+  resolver: "./jest-resolver.js",
   testPathIgnorePatterns: [
     "/node_modules/",
     ".cursor/",
