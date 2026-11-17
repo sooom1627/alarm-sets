@@ -64,8 +64,7 @@ afterEach(async () => {
 describe("opening the target time sheet", () => {
   it("opens one sheet from the list, without starting anything", async () => {
     await addLeaveHome(null);
-    const app = renderRouter("./src/app", { initialUrl: "/" });
-    await app;
+    const app = await renderRouter("./src/app", { initialUrl: "/" });
 
     await fireEvent.press(
       await screen.findByRole("button", {
@@ -81,8 +80,7 @@ describe("opening the target time sheet", () => {
   });
 
   it("closes when the action is not there", async () => {
-    const app = renderRouter("./src/app", { initialUrl: "/" });
-    await app;
+    const app = await renderRouter("./src/app", { initialUrl: "/" });
     await screen.findByText("最初の行動を作りましょう");
 
     await act(async () => {
