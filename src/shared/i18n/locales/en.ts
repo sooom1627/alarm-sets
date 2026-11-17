@@ -97,6 +97,25 @@ export const en = {
     reminderPast: "Already past, so it won't ring",
     startAt: "Start, ring at {{time}}",
   },
+  running: {
+    after: "{{minutes}} min after press",
+    target: "Target {{time}}",
+    remaining: "Left",
+    started: "Started {{time}}",
+    reminder: "Reminder {{time}}",
+    rings: "Rings {{time}}",
+    tomorrow: "Tomorrow {{time}}",
+    spoken: "{{name}}, rings at {{time}}",
+    empty: {
+      title: "Nothing is running",
+      body: "Press an action in the list, and it stays here until it rings.",
+      backToList: "Go to actions",
+    },
+    loadError: {
+      title: "Couldn't load what is running",
+      retry: "Try again",
+    },
+  },
   settings: {
     title: "Settings",
     language: "Language",
