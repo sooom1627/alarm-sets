@@ -31,6 +31,16 @@ export function useStarts() {
   return useQuery({ queryKey: startsQueryKey, queryFn: listStarts });
 }
 
+// The starts still to ring at now, the first to ring first. The list is
+// filtered here rather than in SQL so that it moves on with the clock.
+export function useRunningStarts(now: number) {
+  return useQuery({
+    queryKey: startsQueryKey,
+    queryFn: listStarts,
+    select: (starts) => starts.filter(({ ringsAt }) => ringsAt > now),
+  });
+}
+
 export function useStartAction() {
   const queryClient = useQueryClient();
   return useMutation({

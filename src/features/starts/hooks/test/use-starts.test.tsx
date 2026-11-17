@@ -9,7 +9,12 @@ import { createQueryClient } from "@/shared/query/query-client";
 
 import { getLastTarget } from "../../db/last-targets";
 import { useLastTarget } from "../use-last-target";
-import { useStartAction, useStartAtTarget, useStarts } from "../use-starts";
+import {
+  useRunningStarts,
+  useStartAction,
+  useStartAtTarget,
+  useStarts,
+} from "../use-starts";
 
 const wrapper = ({ children }: { children: ReactNode }) => (
   <QueryClientProvider client={createQueryClient()}>
@@ -145,6 +150,38 @@ describe("useStartAtTarget", () => {
     expect(saved.remindAlarmId).toEqual(expect.any(String));
     await waitFor(() =>
       expect(result.current.lastTarget).toEqual({ hour: 8, minute: 0 }),
+    );
+  });
+});
+
+describe("useRunningStarts", () => {
+  const renderRunning = (now: number) =>
+    renderHook(
+      () => {
+        const { data: runningStarts } = useRunningStarts(now);
+        const { mutateAsync: startAction } = useStartAction();
+        return { runningStarts, startAction };
+      },
+      { wrapper },
+    );
+
+  const start = (ringsAt: number) => ({
+    start: { actionId: 1, startedAt: 1_000, ringsAt, remindsAt: null },
+    name: "昼寝",
+  });
+
+  it("keeps only the starts that have not rung, the first to ring first", async () => {
+    const { result } = await renderRunning(5_000);
+    await waitFor(() => expect(result.current.runningStarts).toEqual([]));
+
+    await act(() => result.current.startAction(start(9_000)));
+    await act(() => result.current.startAction(start(5_000)));
+    await act(() => result.current.startAction(start(7_000)));
+
+    await waitFor(() =>
+      expect(
+        result.current.runningStarts?.map(({ ringsAt }) => ringsAt),
+      ).toEqual([7_000, 9_000]),
     );
   });
 });
