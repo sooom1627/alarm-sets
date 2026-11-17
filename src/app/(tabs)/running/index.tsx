@@ -1,8 +1,8 @@
-import { View } from "react-native";
-
 import { Stack, useRouter } from "expo-router";
 
 import { useTranslation } from "react-i18next";
+
+import { RunningScreen } from "@/features/starts/screens/running-screen";
 
 export default function RunningTab() {
   const { t } = useTranslation();
@@ -10,7 +10,7 @@ export default function RunningTab() {
 
   return (
     <>
-      <View className="bg-grad flex-1" />
+      <RunningScreen />
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button
           icon="gearshape"
