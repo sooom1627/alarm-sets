@@ -98,6 +98,25 @@ export const ja: Translation = {
     reminderPast: "もう過ぎているので鳴りません",
     startAt: "{{time}} に鳴らしてスタート",
   },
+  running: {
+    after: "押してから {{minutes}} 分後",
+    target: "目標 {{time}}",
+    remaining: "残り",
+    started: "{{time}} スタート",
+    reminder: "リマインド {{time}}",
+    rings: "鳴る {{time}}",
+    tomorrow: "明日 {{time}}",
+    spoken: "{{name}}、{{time}}に鳴る",
+    empty: {
+      title: "動いているものはありません",
+      body: "行動の一覧で押すと、鳴るまでのあいだここに並びます。",
+      backToList: "行動の一覧へ",
+    },
+    loadError: {
+      title: "動いているものを読み込めませんでした",
+      retry: "もう一度",
+    },
+  },
   settings: {
     title: "設定",
     language: "言語",
